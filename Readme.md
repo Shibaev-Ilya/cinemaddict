@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Ilia Shibaev](https://up.htmlacademy.ru/ecmascript/17/user/533565).
-* Наставник: Андрей Рыжаков.
+* Наставник: [Андрей Рыжаков](https://htmlacademy.ru/profile/id201015).
 
 ---
 
