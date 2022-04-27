@@ -10,7 +10,7 @@ export default class FilmsPresenter {
   newFilmListView = new NewFilmListView();
   newFilmListContainerView = new NewFilmListContainerView();
 
-  init = (FilmsContainer) => {
+  init(FilmsContainer) {
 
     render(this.newFilmsView, FilmsContainer);
 
@@ -23,5 +23,5 @@ export default class FilmsPresenter {
 
     render(new NewButtonShowMoreView, this.newFilmsView.getElement());
 
-  };
+  }
 }
