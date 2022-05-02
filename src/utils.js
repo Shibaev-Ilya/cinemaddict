@@ -16,7 +16,7 @@ const getRandomPositiveFloat = (a, b, digits = 1) => {
   const result = Math.random() * (upper - lower) + lower;
 
   return +result.toFixed(digits);
-}
+};
 
 const humanizeTaskDueDate = (dueDate, format) => dayjs(dueDate).format(format);
 

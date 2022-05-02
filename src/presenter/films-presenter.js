@@ -4,7 +4,7 @@ import NewFilmListView from '../view/new-film-list-view.js';
 import NewFilmListContainerView from '../view/new-film-list-container-view.js';
 import NewFilmCardView from '../view/new-film-card-view.js';
 import NewButtonShowMoreView from '../view/new-button-show-more-view.js';
-import NewPopupView from "../view/new-popup-view.js";
+import NewPopupView from '../view/new-popup-view.js';
 
 export default class FilmsPresenter {
   newFilmsView = new NewFilmsView();

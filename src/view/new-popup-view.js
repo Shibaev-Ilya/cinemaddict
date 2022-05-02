@@ -1,41 +1,39 @@
 import {createElement} from '../render.js';
-import {humanizeTaskDueDate, getRuntime} from '../utils.js'
+import {humanizeTaskDueDate, getRuntime} from '../utils.js';
 
 const createPopupTemplate = (movie, commentData) => {
 
-  const {id, comments, film_info, user_details} = movie;
+  const filmInfo = movie['film_info'];
 
   const getGenres = (genres) => {
-    let container = ``
+    let container = '';
     genres.forEach((genre) => {
       container += `<span class="film-details__genre">${genre}</span>`;
-    })
+    });
     return container;
   };
 
-  const getList = (list) => list.join(", ");
+  const getList = (list) => list.join(', ');
 
   const getComments = (comments) => {
-    let commentsData = ``;
+    let commentsData = '';
     comments.forEach((comment) => {
       commentsData += `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${comment["emotion"]}.png" width="55" height="55" alt="emoji-smile">
+              <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
             </span>
             <div>
-              <p class="film-details__comment-text">${comment["comment"]}</p>
+              <p class="film-details__comment-text">${comment['comment']}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${comment["author"]}</span>
-                <span class="film-details__comment-day">${humanizeTaskDueDate(comment["date"], 'YYYY/MM/DD HH:mm')}</span>
+                <span class="film-details__comment-author">${comment['author']}</span>
+                <span class="film-details__comment-day">${humanizeTaskDueDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
-          </li>`
+          </li>`;
     });
     return commentsData;
   };
-
-
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -45,58 +43,58 @@ const createPopupTemplate = (movie, commentData) => {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="${film_info["poster"]}" alt="">
+          <img class="film-details__poster-img" src="${filmInfo['poster']}" alt="">
 
-          <p class="film-details__age">${film_info["age_rating"]}+</p>
+          <p class="film-details__age">${filmInfo['age_rating']}+</p>
         </div>
 
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
-              <h3 class="film-details__title">${film_info["title"]}</h3>
-              <p class="film-details__title-original">${film_info["alternative_title"]}</p>
+              <h3 class="film-details__title">${filmInfo['title']}</h3>
+              <p class="film-details__title-original">${filmInfo['alternative_title']}</p>
             </div>
 
             <div class="film-details__rating">
-              <p class="film-details__total-rating">${film_info["total_rating"]}</p>
+              <p class="film-details__total-rating">${filmInfo['total_rating']}</p>
             </div>
           </div>
 
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">${film_info["director"]}</td>
+              <td class="film-details__cell">${filmInfo['director']}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${getList(film_info["writers"])}</td>
+              <td class="film-details__cell">${getList(filmInfo['writers'])}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${getList(film_info["actors"])}</td>
+              <td class="film-details__cell">${getList(filmInfo['actors'])}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${humanizeTaskDueDate(film_info["release"]["date"], 'DD MMMM YYYY')}</td>
+              <td class="film-details__cell">${humanizeTaskDueDate(filmInfo['release']['date'], 'DD MMMM YYYY')}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${getRuntime(film_info["runtime"])}</td>
+              <td class="film-details__cell">${getRuntime(filmInfo['runtime'])}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${film_info["release"]["release_country"]}</td>
+              <td class="film-details__cell">${filmInfo['release']['release_country']}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
-                ${getGenres(film_info["genre"])}
+                ${getGenres(filmInfo['genre'])}
               </td>
             </tr>
           </table>
 
           <p class="film-details__film-description">
-          ${film_info["description"]}
+          ${filmInfo['description']}
           </p>
         </div>
       </div>
@@ -148,7 +146,7 @@ const createPopupTemplate = (movie, commentData) => {
       </section>
     </div>
   </form>
-</section>`
+</section>`;
 };
 
 export default class NewPopupView {
