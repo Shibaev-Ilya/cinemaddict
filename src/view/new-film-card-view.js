@@ -19,7 +19,7 @@ const createNewFilmCardTemplate = (movie, commentData) => {
               <span class="film-card__genre">${getGenres(filmInfo['genre'])}</span>
             </p>
             <img src="${filmInfo['poster']}" alt="${filmInfo['title']}" class="film-card__poster">
-            <p class="film-card__description">${filmInfo['description'].substring(0, 70)}...</p>
+            <p class="film-card__description">${filmInfo['description'].substring(0, 139)}...</p>
             <span class="film-card__comments">${commentsAmount}</span>
           </a>
           <div class="film-card__controls">
