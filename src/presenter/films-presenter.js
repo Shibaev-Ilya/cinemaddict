@@ -13,28 +13,28 @@ export default class FilmsPresenter {
 
   init(FilmsContainer, MoviesModel) {
     this.moviesModel = MoviesModel;
-    this.boardMovies = [...this.moviesModel.getMovies()];
-    this.comments = [...this.moviesModel.getComments()];
+    this.boardMovies = [...this.moviesModel.movies];
+    this.comments = [...this.moviesModel.comments];
 
     render(this.newFilmsView, FilmsContainer);
-    render(this.newFilmListView, this.newFilmsView.getElement());
-    render(this.newFilmListContainerView, this.newFilmListView.getElement());
+    render(this.newFilmListView, this.newFilmsView.element);
+    render(this.newFilmListContainerView, this.newFilmListView.element);
 
     for (let i = 0; i < this.boardMovies.length; i++) {
       const filmCard = new NewFilmCardView(this.boardMovies[i], this.comments[i]);
-      render(filmCard, this.newFilmListContainerView.getElement());
+      render(filmCard, this.newFilmListContainerView.element);
 
-      this.#renderPopup(this.boardMovies[i], this.comments[i], filmCard.getElement());
+      this.#renderPopup(this.boardMovies[i], this.comments[i], filmCard.element);
     }
 
-    render(new NewButtonShowMoreView, this.newFilmsView.getElement());
+    render(new NewButtonShowMoreView, this.newFilmsView.element);
 
   }
 
   #renderPopup(movie, popup, card) {
     const body = document.querySelector('body');
     const popupView = new NewPopupView(movie, popup);
-    const popupElement = popupView.getElement();
+    const popupElement = popupView.element;
 
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
