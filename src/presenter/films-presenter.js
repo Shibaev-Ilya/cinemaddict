@@ -5,7 +5,7 @@ import NewFilmListContainerView from '../view/new-film-list-container-view.js';
 import NewFilmCardView from '../view/new-film-card-view.js';
 import NewButtonShowMoreView from '../view/new-button-show-more-view.js';
 import NewPopupView from '../view/new-popup-view.js';
-import NewEmptyListView from "../view/new-empty-view.js";
+import NewEmptyListView from '../view/new-empty-view.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -93,7 +93,7 @@ export default class FilmsPresenter {
         this.#renderFilm(i);
       }
     } else {
-      render(this.#newEmptyListView, this.#newFilmListContainerView.element)
+      render(this.#newEmptyListView, this.#newFilmListContainerView.element);
     }
 
     if (this.#boardMovies.length > FILM_PER_PAGE) {
