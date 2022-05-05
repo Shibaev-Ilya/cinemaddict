@@ -4,6 +4,7 @@ import {humanizeTaskDueDate, getRuntime} from '../utils.js';
 const createPopupTemplate = (movie, commentData) => {
 
   const filmInfo = movie['film_info'];
+  const filmId = movie['id'];
 
   const getGenres = (genres) => {
     let container = '';
@@ -15,9 +16,9 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getList = (list) => list.join(', ');
 
-  const getComments = (comments) => {
+  const getComments = (comments, id) => {
     let commentsData = '';
-    comments.forEach((comment) => {
+    comments[id].forEach((comment) => {
       commentsData += `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
@@ -108,10 +109,10 @@ const createPopupTemplate = (movie, commentData) => {
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentData[0].length}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentData.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          ${getComments(commentData[0])}
+          ${getComments(commentData, filmId)}
         </ul>
 
         <div class="film-details__new-comment">
@@ -150,25 +151,28 @@ const createPopupTemplate = (movie, commentData) => {
 };
 
 export default class NewPopupView {
+  #element = null;
+  #movie = null;
+  #comments = null;
 
   constructor(movie, comments) {
-    this.movie = movie;
-    this.comments = comments;
+    this.#movie = movie;
+    this.#comments = comments;
   }
 
-  getTemplate() {
-    return createPopupTemplate(this.movie, this.comments);
+  get template() {
+    return createPopupTemplate(this.#movie, this.#comments);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 
 }

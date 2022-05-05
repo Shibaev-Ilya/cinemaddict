@@ -11,26 +11,53 @@ export default class FilmsPresenter {
   newFilmListView = new NewFilmListView();
   newFilmListContainerView = new NewFilmListContainerView();
 
-  init(FilmsContainer, popupContainer, MoviesModel) {
+  init(FilmsContainer, MoviesModel) {
     this.moviesModel = MoviesModel;
-    this.boardMovies = [...this.moviesModel.getMovies()];
-    this.comments = [...this.moviesModel.getComments()];
-
-    this.firstPopup = this.comments[0];
-    this.firstMovie = this.boardMovies[0];
+    this.boardMovies = [...this.moviesModel.movies];
+    this.comments = [...this.moviesModel.comments];
 
     render(this.newFilmsView, FilmsContainer);
-
-    render(this.newFilmListView, this.newFilmsView.getElement());
-    render(this.newFilmListContainerView, this.newFilmListView.getElement());
+    render(this.newFilmListView, this.newFilmsView.element);
+    render(this.newFilmListContainerView, this.newFilmListView.element);
 
     for (let i = 0; i < this.boardMovies.length; i++) {
-      render(new NewFilmCardView(this.boardMovies[i], this.comments[i]), this.newFilmListContainerView.getElement());
+      const filmCard = new NewFilmCardView(this.boardMovies[i], this.comments[i]);
+      render(filmCard, this.newFilmListContainerView.element);
+
+      this.#renderPopup(this.boardMovies[i], this.comments[i], filmCard.element);
     }
 
-    render(new NewButtonShowMoreView, this.newFilmsView.getElement());
+    render(new NewButtonShowMoreView, this.newFilmsView.element);
 
-    render(new NewPopupView(this.firstMovie, this.firstPopup), popupContainer, 'afterend');
+  }
+
+  #renderPopup(movie, popup, card) {
+    const body = document.querySelector('body');
+    const popupView = new NewPopupView(movie, popup);
+    const popupElement = popupView.element;
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        removePopup(popupElement);
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    function addPopup() {
+      body.classList.add('hide-overflow');
+      body.append(popupElement);
+      popupElement.querySelector('.film-details__close-btn').addEventListener('click', () => removePopup(popupElement));
+      document.addEventListener('keydown', onEscKeyDown);
+    }
+
+    function removePopup(element) {
+      body.classList.remove('hide-overflow');
+      element.remove();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+
+    card.addEventListener('click', () => addPopup(movie, popup));
 
   }
 }
