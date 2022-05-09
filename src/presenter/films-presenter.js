@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 import NewFilmsView from '../view/new-films-view.js';
 import NewFilmListView from '../view/new-film-list-view.js';
 import NewFilmListContainerView from '../view/new-film-list-container-view.js';
@@ -33,8 +33,7 @@ export default class FilmsPresenter {
     this.#renderBoard();
   }
 
-  #handleShowMoreButtonClick = (evt) => {
-    evt.preventDefault();
+  #handleShowMoreButtonClick = () => {
     this.#boardMovies
       .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_PER_PAGE)
       .forEach((task, index) => this.#renderFilm(index));
@@ -47,41 +46,40 @@ export default class FilmsPresenter {
     }
   };
 
+  #renderPopup = (movie, popup, card) => {
+    const body = document.querySelector('body');
+    const popupView = new NewPopupView(movie, popup);
+
+    const removePopup = () => {
+      body.classList.remove('hide-overflow');
+      popupView.element.remove();
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
+
+    function onEscKeyDown(evt) {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        removePopup();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    }
+
+    const addPopup = () => {
+      body.classList.add('hide-overflow');
+      body.append(popupView.element);
+      popupView.setClickCloseHandler(removePopup);
+      document.addEventListener('keydown', onEscKeyDown);
+    };
+
+    card.setClickHandler(addPopup);
+
+  };
+
   #renderFilm = (index) => {
     const filmCard = new NewFilmCardView(this.#boardMovies[index], this.comments[index]);
     render(filmCard, this.#newFilmListContainerView.element);
-    this.#renderPopup(this.#boardMovies[index], this.comments[index], filmCard.element);
+    this.#renderPopup(this.#boardMovies[index], this.comments[index], filmCard);
   };
-
-  #renderPopup(movie, popup, card) {
-    const body = document.querySelector('body');
-    const popupView = new NewPopupView(movie, popup);
-    const popupElement = popupView.element;
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        removePopup(popupElement);
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    function addPopup() {
-      body.classList.add('hide-overflow');
-      body.append(popupElement);
-      popupElement.querySelector('.film-details__close-btn').addEventListener('click', () => removePopup(popupElement));
-      document.addEventListener('keydown', onEscKeyDown);
-    }
-
-    function removePopup(element) {
-      body.classList.remove('hide-overflow');
-      element.remove();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-
-    card.addEventListener('click', () => addPopup(movie, popup));
-
-  }
 
   #renderBoard() {
     render(this.#newFilmsView,  this.#FilmsContainer);
@@ -99,7 +97,7 @@ export default class FilmsPresenter {
     if (this.#boardMovies.length > FILM_PER_PAGE) {
       render(this.#newButtonShowMoreView, this.#newFilmsView.element);
 
-      this.#newButtonShowMoreView.element.addEventListener('click', this.#handleShowMoreButtonClick);
+      this.#newButtonShowMoreView.setClickHandler(this.#handleShowMoreButtonClick);
     }
   }
 }
