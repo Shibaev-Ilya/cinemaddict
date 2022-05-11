@@ -5,6 +5,16 @@ const createNewFilmCardTemplate = (movie, commentData) => {
 
   const id = movie['id'];
   const filmInfo = movie['film_info'];
+  const userDetails = movie['user_details'];
+  const isWatchlist = userDetails['watchlist'];
+  const isHistory = userDetails['already_watched'];
+  const isFavorite = userDetails['favorite'];
+
+  const setActive = (data) => {
+    if (data) {
+      return 'film-card__controls-item--active';
+    }
+  };
 
   const getGenres = (genre) => genre.join(', ');
   const commentsAmount = commentData[id].length > 1 ? `${commentData[id].length} comments` : `${commentData[id].length} comment`;
@@ -23,9 +33,9 @@ const createNewFilmCardTemplate = (movie, commentData) => {
             <span class="film-card__comments">${commentsAmount}</span>
           </a>
           <div class="film-card__controls">
-            <button class="film-card__controls-item film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-            <button class="film-card__controls-item film-card__controls-item--favorite" type="button">Mark as favorite</button>
+            <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${setActive(isWatchlist)}" type="button">Add to watchlist</button>
+            <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${setActive(isHistory)}" type="button">Mark as watched</button>
+            <button class="film-card__controls-item film-card__controls-item--favorite ${setActive(isFavorite)}" type="button">Mark as favorite</button>
           </div>
         </article>`;
 };
