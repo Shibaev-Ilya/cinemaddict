@@ -1,9 +1,9 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createNewMenuTemplate = (movies) => {
-  const inWatchlist = movies.filter(movie => movie['user_details']['watchlist']);
-  const inHistory = movies.filter(movie => movie['user_details']['already_watched']);
-  const inFavorites = movies.filter(movie => movie['user_details']['favorite']);
+  const inWatchlist = movies.filter((movie) => movie['user_details']['watchlist']);
+  const inHistory = movies.filter((movie) => movie['user_details']['already_watched']);
+  const inFavorites = movies.filter((movie) => movie['user_details']['favorite']);
 
   return (`<nav class="main-navigation">
     <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>

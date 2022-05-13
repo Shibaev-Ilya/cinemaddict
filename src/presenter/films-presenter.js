@@ -6,8 +6,8 @@ import NewFilmCardView from '../view/new-film-card-view.js';
 import NewButtonShowMoreView from '../view/new-button-show-more-view.js';
 import NewPopupView from '../view/new-popup-view.js';
 import NewEmptyListView from '../view/new-empty-view.js';
-import NewMenuView from "../view/new-menu-view.js";
-import NewFilterView from "../view/new-filter-view.js";
+import NewMenuView from '../view/new-menu-view.js';
+import NewFilterView from '../view/new-filter-view.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -26,7 +26,7 @@ export default class FilmsPresenter {
 
   init() {
     this.#boardMovies = [...this.#moviesModel.movies];
-    this.comments = [...this.#moviesModel.comments];
+    this.#comments = [...this.#moviesModel.comments];
     this.#renderBoard();
   }
 
@@ -38,7 +38,6 @@ export default class FilmsPresenter {
   #newFilterView = new NewFilterView;
 
   #handleShowMoreButtonClick = () => {
-    console.log(this.#renderedFilmCount, this.#renderedFilmCount + FILM_PER_PAGE);
     this.#boardMovies
       .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_PER_PAGE)
       .forEach((movie) => this.#renderFilm(movie['id']));
@@ -81,15 +80,15 @@ export default class FilmsPresenter {
   };
 
   #renderFilm = (id) => {
-    const filmCard = new NewFilmCardView(this.#boardMovies[id], this.comments[id]);
+    const filmCard = new NewFilmCardView(this.#boardMovies[id], this.#comments[id]);
     render(filmCard, this.#newFilmListContainerView.element);
-    this.#renderPopup(this.#boardMovies[id], this.comments[id], filmCard);
+    this.#renderPopup(this.#boardMovies[id], this.#comments[id], filmCard);
   };
 
   #renderMenu = () => {
     this.#newMenuView = new NewMenuView(this.#boardMovies);
     render(this.#newMenuView, this.#FilmsContainer);
-  }
+  };
 
   #renderBoard() {
     this.#renderMenu();

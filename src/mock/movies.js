@@ -54,7 +54,7 @@ const generateMovie = () => ({
     },
     'runtime': getRandomInteger(45, 150),
     'genre': [
-      'Comedy'
+      'Comedy',
     ],
     'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic "Nu, Pogodi!" and "Alice in Wonderland", with the best fight scenes since Bruce Lee.'
   },

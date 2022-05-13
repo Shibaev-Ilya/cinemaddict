@@ -6,11 +6,30 @@ const createPopupTemplate = (movie, commentData) => {
   const filmInfo = movie['film_info'];
   const filmId = movie['id'];
 
+  const userDetails = movie['user_details'];
+  const isWatchlist = userDetails['watchlist'];
+  const isHistory = userDetails['already_watched'];
+  const isFavorite = userDetails['favorite'];
+
+  const setActive = (data) => {
+    if (data) {
+      return 'film-details__control-button--active';
+    }
+  };
+
   const getGenres = (genres) => {
-    let container = '';
+    const container = {
+      'title': '',
+      'list': ''
+    };
     genres.forEach((genre) => {
-      container += `<span class="film-details__genre">${genre}</span>`;
+      container.list += `<span class="film-details__genre">${genre}</span>`;
     });
+    if (genres.length > 1) {
+      container.title = 'Genres';
+    } else {
+      container.title = 'Genre';
+    }
     return container;
   };
 
@@ -35,6 +54,10 @@ const createPopupTemplate = (movie, commentData) => {
     });
     return commentsData;
   };
+
+  const genresData = getGenres(filmInfo['genre']);
+  const genersTitle = genresData['title'];
+  const genersList = genresData['list'];
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -87,9 +110,9 @@ const createPopupTemplate = (movie, commentData) => {
               <td class="film-details__cell">${filmInfo['release']['release_country']}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${genersTitle}</td>
               <td class="film-details__cell">
-                ${getGenres(filmInfo['genre'])}
+                ${genersList}
               </td>
             </tr>
           </table>
@@ -101,15 +124,15 @@ const createPopupTemplate = (movie, commentData) => {
       </div>
 
       <section class="film-details__controls">
-        <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-        <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-        <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watchlist ${setActive(isWatchlist)}" id="watchlist" name="watchlist">Add to watchlist</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watched ${setActive(isHistory)}" id="watched" name="watched">Already watched</button>
+        <button type="button" class="film-details__control-button film-details__control-button--favorite ${setActive(isFavorite)}" id="favorite" name="favorite">Add to favorites</button>
       </section>
     </div>
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentData.length}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentData[filmId].length}</span></h3>
 
         <ul class="film-details__comments-list">
           ${getComments(commentData, filmId)}
