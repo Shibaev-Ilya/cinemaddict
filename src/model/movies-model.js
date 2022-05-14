@@ -2,8 +2,10 @@ import {generateMovie} from '../mock/movies.js';
 import {generateComment} from '../mock/comments.js';
 
 export default class MoviesModel {
-  #movies =  Array.from({length: 13}, generateMovie);
-  #comments =  Array.from({length: 13}, generateComment);
+  #films = 20;
+
+  #movies =  Array.from({length:  this.#films}, generateMovie);
+  #comments =  Array.from({length:  this.#films}, generateComment);
 
   get comments() {
     return this.#comments;

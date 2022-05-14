@@ -6,41 +6,45 @@ import NewFilmCardView from '../view/new-film-card-view.js';
 import NewButtonShowMoreView from '../view/new-button-show-more-view.js';
 import NewPopupView from '../view/new-popup-view.js';
 import NewEmptyListView from '../view/new-empty-view.js';
+import NewMenuView from '../view/new-menu-view.js';
+import NewFilterView from '../view/new-filter-view.js';
 
 const FILM_PER_PAGE = 5;
 
 export default class FilmsPresenter {
-  moviesModel = null;
-
-  #newFilmsView = new NewFilmsView();
-  #newFilmListView = new NewFilmListView();
-  #newFilmListContainerView = new NewFilmListContainerView();
-  #newButtonShowMoreView = new NewButtonShowMoreView;
-  #newEmptyListView = new NewEmptyListView;
-
-  #renderedFilmCount = FILM_PER_PAGE;
-  #boardMovies = [];
+  #moviesModel = null;
   #FilmsContainer = null;
+  #boardMovies = [];
+  #comments = null;
+  #renderedFilmCount = FILM_PER_PAGE;
+  #newMenuView = null;
 
   constructor(FilmsContainer, MoviesModel) {
-    this.moviesModel = MoviesModel;
+    this.#moviesModel = MoviesModel;
     this.#FilmsContainer = FilmsContainer;
   }
 
   init() {
-    this.#boardMovies = [...this.moviesModel.movies];
-    this.comments = [...this.moviesModel.comments];
+    this.#boardMovies = [...this.#moviesModel.movies];
+    this.#comments = [...this.#moviesModel.comments];
     this.#renderBoard();
   }
+
+  #newFilmsView = new NewFilmsView;
+  #newFilmListView = new NewFilmListView;
+  #newFilmListContainerView = new NewFilmListContainerView;
+  #newButtonShowMoreView = new NewButtonShowMoreView;
+  #newEmptyListView = new NewEmptyListView;
+  #newFilterView = new NewFilterView;
 
   #handleShowMoreButtonClick = () => {
     this.#boardMovies
       .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_PER_PAGE)
-      .forEach((task, index) => this.#renderFilm(index));
+      .forEach((movie) => this.#renderFilm(movie['id']));
 
     this.#renderedFilmCount += FILM_PER_PAGE;
 
-    if (this.#boardMovies.length < this.#renderedFilmCount) {
+    if (this.#boardMovies.length <= this.#renderedFilmCount) {
       this.#newButtonShowMoreView.element.remove();
       this.#newButtonShowMoreView.removeElement();
     }
@@ -75,14 +79,21 @@ export default class FilmsPresenter {
 
   };
 
-  #renderFilm = (index) => {
-    const filmCard = new NewFilmCardView(this.#boardMovies[index], this.comments[index]);
+  #renderFilm = (id) => {
+    const filmCard = new NewFilmCardView(this.#boardMovies[id], this.#comments[id]);
     render(filmCard, this.#newFilmListContainerView.element);
-    this.#renderPopup(this.#boardMovies[index], this.comments[index], filmCard);
+    this.#renderPopup(this.#boardMovies[id], this.#comments[id], filmCard);
+  };
+
+  #renderMenu = () => {
+    this.#newMenuView = new NewMenuView(this.#boardMovies);
+    render(this.#newMenuView, this.#FilmsContainer);
   };
 
   #renderBoard() {
-    render(this.#newFilmsView,  this.#FilmsContainer);
+    this.#renderMenu();
+    render(this.#newFilterView, this.#FilmsContainer);
+    render(this.#newFilmsView, this.#FilmsContainer);
     render(this.#newFilmListView, this.#newFilmsView.element);
     render(this.#newFilmListContainerView, this.#newFilmListView.element);
 

@@ -30,7 +30,7 @@ const generatePoster = () => {
 };
 
 let id = 0;
-const getId = () => id++;
+const getId = () => id++ ;
 
 const generateMovie = () => ({
   'id': getId(),
@@ -54,15 +54,15 @@ const generateMovie = () => ({
     },
     'runtime': getRandomInteger(45, 150),
     'genre': [
-      'Comedy'
+      'Comedy',
     ],
     'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic "Nu, Pogodi!" and "Alice in Wonderland", with the best fight scenes since Bruce Lee.'
   },
   'user_details': {
-    'watchlist': false,
-    'already_watched': true,
+    'watchlist': Boolean(getRandomInteger(0, 1)),
+    'already_watched': Boolean(getRandomInteger(0, 1)),
     'watching_date': '2019-04-12T16:12:32.554Z',
-    'favorite': false
+    'favorite': Boolean(getRandomInteger(0, 1))
   }
 });
 

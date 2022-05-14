@@ -17,7 +17,7 @@ const getCommentData = (id, comment) => ({
 const getComments = () => {
   const comments = [];
 
-  for (let i = 0; i < getRandomInteger(2, 20 ); i++) {
+  for (let i = 0; i < getRandomInteger(0, 20 ); i++) {
     const comment = words.slice(0, getRandomInteger(0, words.length - 1 )).join(' ');
     comments.push(getCommentData(i, comment));
   }
