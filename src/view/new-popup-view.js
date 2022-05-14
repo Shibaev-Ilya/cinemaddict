@@ -5,6 +5,7 @@ const createPopupTemplate = (movie, commentData) => {
 
   const filmInfo = movie['film_info'];
   const filmId = movie['id'];
+  const comments = movie['comments'];
 
   const userDetails = movie['user_details'];
   const isWatchlist = userDetails['watchlist'];
@@ -35,18 +36,18 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getList = (list) => list.join(', ');
 
-  const getComments = (comments, id) => {
+  const getComments = () => {
     let commentsData = '';
-    comments[id].forEach((comment) => {
+    comments.forEach((comment) => {
       commentsData += `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
+              <img src="./images/emoji/${commentData[comment]['emotion']}.png" width="55" height="55" alt="emoji-smile">
             </span>
             <div>
-              <p class="film-details__comment-text">${comment['comment']}</p>
+              <p class="film-details__comment-text">${commentData[comment]['comment']}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${comment['author']}</span>
-                <span class="film-details__comment-day">${humanizeTaskDueDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
+                <span class="film-details__comment-author">${commentData[comment]['author']}</span>
+                <span class="film-details__comment-day">${humanizeTaskDueDate(commentData[comment]['date'], 'YYYY/MM/DD HH:mm')}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
@@ -132,10 +133,10 @@ const createPopupTemplate = (movie, commentData) => {
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentData[filmId].length}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          ${getComments(commentData, filmId)}
+          ${getComments()}
         </ul>
 
         <div class="film-details__new-comment">

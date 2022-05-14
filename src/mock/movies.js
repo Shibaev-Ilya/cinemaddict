@@ -32,9 +32,19 @@ const generatePoster = () => {
 let id = 0;
 const getId = () => id++ ;
 
+const getCommentsId = () => {
+  let ids = new Set;
+
+  for (let i = 0; i < getRandomInteger(0, 20); i++) {
+    ids.add(getRandomInteger(0, 20))
+  }
+  console.log(Array.from(ids));
+  return Array.from(ids);
+};
+
 const generateMovie = () => ({
   'id': getId(),
-  'comments': [],
+  'comments': getCommentsId(),
   'film_info': {
     'title': generateTitle(),
     'alternative_title': 'Laziness Who Sold Themselves',

@@ -6,6 +6,7 @@ const createNewFilmCardTemplate = (movie, commentData) => {
   const id = movie['id'];
   const filmInfo = movie['film_info'];
   const userDetails = movie['user_details'];
+  const comments = movie['comments'];
   const isWatchlist = userDetails['watchlist'];
   const isHistory = userDetails['already_watched'];
   const isFavorite = userDetails['favorite'];
@@ -17,7 +18,7 @@ const createNewFilmCardTemplate = (movie, commentData) => {
   };
 
   const getGenres = (genre) => genre.join(', ');
-  const commentsAmount = commentData[id].length > 1 ? `${commentData[id].length} comments` : `${commentData[id].length} comment`;
+  const commentsAmount = comments.length > 1 ? `${comments.length} comments` : `${comments.length} comment`;
 
   return `<article class="film-card">
           <a class="film-card__link">
