@@ -33,12 +33,11 @@ let id = 0;
 const getId = () => id++ ;
 
 const getCommentsId = () => {
-  let ids = new Set;
+  const ids = new Set;
 
   for (let i = 0; i < getRandomInteger(0, 20); i++) {
-    ids.add(getRandomInteger(0, 20))
+    ids.add(getRandomInteger(0, 20));
   }
-  console.log(Array.from(ids));
   return Array.from(ids);
 };
 

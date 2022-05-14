@@ -4,7 +4,6 @@ import {humanizeTaskDueDate, getRuntime} from '../utils.js';
 const createPopupTemplate = (movie, commentData) => {
 
   const filmInfo = movie['film_info'];
-  const filmId = movie['id'];
   const comments = movie['comments'];
 
   const userDetails = movie['user_details'];
@@ -38,7 +37,10 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getComments = () => {
     let commentsData = '';
-    comments.forEach((comment) => {
+    for(let comment of comments) {
+      if (commentData[comment] === undefined) {
+        continue;
+      }
       commentsData += `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${commentData[comment]['emotion']}.png" width="55" height="55" alt="emoji-smile">
@@ -52,7 +54,7 @@ const createPopupTemplate = (movie, commentData) => {
               </p>
             </div>
           </li>`;
-    });
+    }
     return commentsData;
   };
 

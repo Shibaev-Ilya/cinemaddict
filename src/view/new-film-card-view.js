@@ -1,9 +1,8 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeTaskDueDate, getRuntime} from '../utils.js';
 
-const createNewFilmCardTemplate = (movie, commentData) => {
+const createNewFilmCardTemplate = (movie) => {
 
-  const id = movie['id'];
   const filmInfo = movie['film_info'];
   const userDetails = movie['user_details'];
   const comments = movie['comments'];
@@ -43,14 +42,13 @@ const createNewFilmCardTemplate = (movie, commentData) => {
 
 export default class NewFilmCardView extends AbstractView {
 
-  constructor(movie, comments) {
+  constructor(movie) {
     super();
     this.movie = movie;
-    this.comments = comments;
   }
 
   get template() {
-    return createNewFilmCardTemplate(this.movie, this.comments);
+    return createNewFilmCardTemplate(this.movie);
   }
 
   setClickHandler = (callback) => {

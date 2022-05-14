@@ -17,7 +17,7 @@ const getCommentData = (id, comment) => ({
 const generateComments = () => {
   const comments = [];
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i <= 20; i++) {
     const comment = words.slice(0, getRandomInteger(0, words.length - 1 )).join(' ');
     comments.push(getCommentData(i, comment));
   }

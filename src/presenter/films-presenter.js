@@ -80,7 +80,7 @@ export default class FilmsPresenter {
   };
 
   #renderFilm = (id) => {
-    const filmCard = new NewFilmCardView(this.#boardMovies[id], this.#comments);
+    const filmCard = new NewFilmCardView(this.#boardMovies[id]);
     render(filmCard, this.#newFilmListContainerView.element);
     this.#renderPopup(this.#boardMovies[id], this.#comments, filmCard);
   };
