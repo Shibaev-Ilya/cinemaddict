@@ -59,7 +59,7 @@ export default class NewFilmCardView extends AbstractView {
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    let buttons = evt.target.closest('.film-card__controls');
+    const buttons = evt.target.closest('.film-card__controls');
     if (buttons) {
       return;
     }
