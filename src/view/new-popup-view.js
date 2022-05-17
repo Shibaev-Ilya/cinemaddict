@@ -15,6 +15,7 @@ const createPopupTemplate = (movie, commentData) => {
     if (data) {
       return 'film-details__control-button--active';
     }
+    return '';
   };
 
   const getGenres = (genres) => {
@@ -37,7 +38,7 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getComments = () => {
     let commentsData = '';
-    for(let comment of comments) {
+    for(const comment of comments) {
       if (commentData[comment] === undefined) {
         continue;
       }
@@ -190,6 +191,16 @@ export default class NewPopupView extends AbstractView {
     return createPopupTemplate(this.#movie, this.#comments);
   }
 
+  setClickHandler = (callback) => {
+    this._callback.clickAddPopup = callback;
+    this.element.addEventListener('click', this.#clickAddPopupHandler);
+  };
+
+  #clickAddPopupHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.clickAddPopup();
+  };
+
   setClickCloseHandler = (callback) => {
     this._callback.click = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#clickHandler);
@@ -198,6 +209,15 @@ export default class NewPopupView extends AbstractView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+  };
+
+  setClickControlsHandler = () => {
+    this.element.querySelector('.film-details__controls').addEventListener('click', this.#clickControlsHandler);
+  };
+
+  #clickControlsHandler = (evt) => {
+    evt.preventDefault();
+    evt.target.classList.toggle('film-details__control-button--active');
   };
 
 }

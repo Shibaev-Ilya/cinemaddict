@@ -2,12 +2,11 @@ import {render} from '../framework/render.js';
 import NewFilmsView from '../view/new-films-view.js';
 import NewFilmListView from '../view/new-film-list-view.js';
 import NewFilmListContainerView from '../view/new-film-list-container-view.js';
-import NewButtonShowMoreView from '../view/new-button-show-more-view.js';
 import NewEmptyListView from '../view/new-empty-view.js';
 import NewMenuView from '../view/new-menu-view.js';
 import NewFilterView from '../view/new-filter-view.js';
 import MoviePresenter from './movie-presenter.js';
-import ShowMorePresenter from "./show-more-presenter.js";
+import ShowMorePresenter from './show-more-presenter.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -37,14 +36,21 @@ export default class FilmsPresenter {
   #newEmptyListView = new NewEmptyListView;
   #newFilterView = new NewFilterView;
 
-  #renderMovie = (movie, comments) => {
+  #closeOpenedPopup = () => {
+    const popup = document.querySelector('.film-details');
+    if(popup !== null) {
+      popup.remove();
+    }
+  };
+
+  #renderMovie = (movie, comments, callback) => {
     const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element);
-    moviePresenter.init(movie, comments);
+    moviePresenter.init(movie, comments, callback);
   };
 
   #renderMovies = (movies, from, to) => {
-    let moviesData = movies.slice(from, to);
-    moviesData.forEach((movie) => this.#renderMovie(movie, this.#comments));
+    const moviesData = movies.slice(from, to);
+    moviesData.forEach((movie) => this.#renderMovie(movie, this.#comments, this.#closeOpenedPopup));
   };
 
   #handleShowMoreButtonClick = () => {
@@ -92,5 +98,5 @@ export default class FilmsPresenter {
     if (this.#boardMovies.length > FILM_PER_PAGE) {
       this.#renderButtonShowMore();
     }
-  };
+  }
 }

@@ -1,5 +1,5 @@
-import NewButtonShowMoreView from "../view/new-button-show-more-view.js";
-import {render} from "../framework/render";
+import NewButtonShowMoreView from '../view/new-button-show-more-view.js';
+import {render} from '../framework/render';
 
 export default class ShowMorePresenter {
 

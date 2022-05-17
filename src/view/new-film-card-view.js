@@ -14,6 +14,7 @@ const createNewFilmCardTemplate = (movie) => {
     if (data) {
       return 'film-card__controls-item--active';
     }
+    return '';
   };
 
   const getGenres = (genre) => genre.join(', ');
@@ -51,14 +52,27 @@ export default class NewFilmCardView extends AbstractView {
     return createNewFilmCardTemplate(this.movie);
   }
 
-  setClickHandler = (callback) => {
-    this._callback.click = callback;
+  setClickAddPopupHandler = (callback) => {
+    this._callback.clickAddPopup = callback;
     this.element.addEventListener('click', this.#clickHandler);
   };
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.click();
+    let buttons = evt.target.closest('.film-card__controls');
+    if (buttons) {
+      return;
+    }
+    this._callback.clickAddPopup();
+  };
+
+  setClickControlsHandler = () => {
+    this.element.querySelector('.film-card__controls').addEventListener('click', this.#clickControlsHandler);
+  };
+
+  #clickControlsHandler = (evt) => {
+    evt.preventDefault();
+    evt.target.classList.toggle('film-card__controls-item--active');
   };
 
 }
