@@ -4,17 +4,18 @@ import {humanizeTaskDueDate, getRuntime} from '../utils.js';
 const createPopupTemplate = (movie, commentData) => {
 
   const filmInfo = movie['film_info'];
-  const filmId = movie['id'];
+  const comments = movie['comments'];
 
-  const userDetails = movie['user_details'];
+  const userDetails = movie['userDetails'];
   const isWatchlist = userDetails['watchlist'];
-  const isHistory = userDetails['already_watched'];
+  const isHistory = userDetails['alreadyWatched'];
   const isFavorite = userDetails['favorite'];
 
   const setActive = (data) => {
     if (data) {
       return 'film-details__control-button--active';
     }
+    return '';
   };
 
   const getGenres = (genres) => {
@@ -35,23 +36,26 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getList = (list) => list.join(', ');
 
-  const getComments = (comments, id) => {
+  const getComments = () => {
     let commentsData = '';
-    comments[id].forEach((comment) => {
+    for(const comment of comments) {
+      if (commentData[comment] === undefined) {
+        continue;
+      }
       commentsData += `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
+              <img src="./images/emoji/${commentData[comment]['emotion']}.png" width="55" height="55" alt="emoji-smile">
             </span>
             <div>
-              <p class="film-details__comment-text">${comment['comment']}</p>
+              <p class="film-details__comment-text">${commentData[comment]['comment']}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${comment['author']}</span>
-                <span class="film-details__comment-day">${humanizeTaskDueDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
+                <span class="film-details__comment-author">${commentData[comment]['author']}</span>
+                <span class="film-details__comment-day">${humanizeTaskDueDate(commentData[comment]['date'], 'YYYY/MM/DD HH:mm')}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>`;
-    });
+    }
     return commentsData;
   };
 
@@ -132,10 +136,10 @@ const createPopupTemplate = (movie, commentData) => {
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentData[filmId].length}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
         <ul class="film-details__comments-list">
-          ${getComments(commentData, filmId)}
+          ${getComments()}
         </ul>
 
         <div class="film-details__new-comment">
@@ -187,6 +191,16 @@ export default class NewPopupView extends AbstractView {
     return createPopupTemplate(this.#movie, this.#comments);
   }
 
+  setClickHandler = (callback) => {
+    this._callback.clickAddPopup = callback;
+    this.element.addEventListener('click', this.#clickAddPopupHandler);
+  };
+
+  #clickAddPopupHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.clickAddPopup();
+  };
+
   setClickCloseHandler = (callback) => {
     this._callback.click = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#clickHandler);
@@ -195,6 +209,40 @@ export default class NewPopupView extends AbstractView {
   #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
+  };
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteHandler);
+  };
+
+  #favoriteHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+    evt.target.classList.toggle('film-details__control-button--active');
+  };
+
+  setWatchListClickHandler = (callback) => {
+    this._callback.watchListClick = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#watchListHandler);
+  };
+
+  #watchListHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchListClick();
+    evt.target.classList.toggle('film-details__control-button--active');
+  };
+
+
+  setWatchedClickHandler = (callback) => {
+    this._callback.watchedClick = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#watchedHandler);
+  };
+
+  #watchedHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchedClick();
+    evt.target.classList.toggle('film-details__control-button--active');
   };
 
 }

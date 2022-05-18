@@ -14,10 +14,10 @@ const getCommentData = (id, comment) => ({
   'emotion': emotions[getRandomInteger(0, emotions.length -1)]
 });
 
-const getComments = () => {
+const generateComments = () => {
   const comments = [];
 
-  for (let i = 0; i < getRandomInteger(0, 20 ); i++) {
+  for (let i = 0; i <= 20; i++) {
     const comment = words.slice(0, getRandomInteger(0, words.length - 1 )).join(' ');
     comments.push(getCommentData(i, comment));
   }
@@ -25,11 +25,4 @@ const getComments = () => {
   return comments;
 };
 
-let filmId = 0;
-const getId = () => filmId++;
-
-const generateComment = () => ({
-  [getId()] : getComments(),
-});
-
-export {generateComment};
+export {generateComments};

@@ -32,9 +32,18 @@ const generatePoster = () => {
 let id = 0;
 const getId = () => id++ ;
 
+const getCommentsId = () => {
+  const ids = new Set;
+
+  for (let i = 0; i < getRandomInteger(0, 20); i++) {
+    ids.add(getRandomInteger(0, 20));
+  }
+  return Array.from(ids);
+};
+
 const generateMovie = () => ({
   'id': getId(),
-  'comments': [],
+  'comments': getCommentsId(),
   'film_info': {
     'title': generateTitle(),
     'alternative_title': 'Laziness Who Sold Themselves',
@@ -58,10 +67,10 @@ const generateMovie = () => ({
     ],
     'description': 'Oscar-winning film, a war drama about two young people, from the creators of timeless classic "Nu, Pogodi!" and "Alice in Wonderland", with the best fight scenes since Bruce Lee.'
   },
-  'user_details': {
+  'userDetails': {
     'watchlist': Boolean(getRandomInteger(0, 1)),
-    'already_watched': Boolean(getRandomInteger(0, 1)),
-    'watching_date': '2019-04-12T16:12:32.554Z',
+    'alreadyWatched': Boolean(getRandomInteger(0, 1)),
+    'watchingDate': '2019-04-12T16:12:32.554Z',
     'favorite': Boolean(getRandomInteger(0, 1))
   }
 });
