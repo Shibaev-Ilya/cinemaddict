@@ -6,9 +6,9 @@ const createPopupTemplate = (movie, commentData) => {
   const filmInfo = movie['film_info'];
   const comments = movie['comments'];
 
-  const userDetails = movie['user_details'];
+  const userDetails = movie['userDetails'];
   const isWatchlist = userDetails['watchlist'];
-  const isHistory = userDetails['already_watched'];
+  const isHistory = userDetails['alreadyWatched'];
   const isFavorite = userDetails['favorite'];
 
   const setActive = (data) => {
@@ -211,12 +211,37 @@ export default class NewPopupView extends AbstractView {
     this._callback.click();
   };
 
-  setClickControlsHandler = () => {
-    this.element.querySelector('.film-details__controls').addEventListener('click', this.#clickControlsHandler);
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#favoriteHandler);
   };
 
-  #clickControlsHandler = (evt) => {
+  #favoriteHandler = (evt) => {
     evt.preventDefault();
+    this._callback.favoriteClick();
+    evt.target.classList.toggle('film-details__control-button--active');
+  };
+
+  setWatchListClickHandler = (callback) => {
+    this._callback.watchListClick = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#watchListHandler);
+  };
+
+  #watchListHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchListClick();
+    evt.target.classList.toggle('film-details__control-button--active');
+  };
+
+
+  setWatchedClickHandler = (callback) => {
+    this._callback.watchedClick = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#watchedHandler);
+  };
+
+  #watchedHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchedClick();
     evt.target.classList.toggle('film-details__control-button--active');
   };
 

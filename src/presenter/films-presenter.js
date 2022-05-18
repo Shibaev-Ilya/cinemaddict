@@ -1,4 +1,4 @@
-import {render} from '../framework/render.js';
+import {render, remove} from '../framework/render.js';
 import NewFilmsView from '../view/new-films-view.js';
 import NewFilmListView from '../view/new-film-list-view.js';
 import NewFilmListContainerView from '../view/new-film-list-container-view.js';
@@ -7,6 +7,7 @@ import NewMenuView from '../view/new-menu-view.js';
 import NewFilterView from '../view/new-filter-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
+import {updateItem} from '../utils.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -17,6 +18,7 @@ export default class FilmsPresenter {
   #comments = null;
   #renderedFilmCount = FILM_PER_PAGE;
   #newMenuView = null;
+  #moviePresenters = new Map();
 
   constructor(FilmsContainer, MoviesModel) {
     this.#moviesModel = MoviesModel;
@@ -43,9 +45,15 @@ export default class FilmsPresenter {
     }
   };
 
+  #handleMovieChange = (updatedTask) => {
+    this.#boardMovies = updateItem(this.#boardMovies, updatedTask);
+    this.#moviePresenters.get(updatedTask.id).init(updatedTask);
+  };
+
   #renderMovie = (movie, comments, callback) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element);
-    moviePresenter.init(movie, comments, callback);
+    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, comments, callback, this.#handleMovieChange);
+    moviePresenter.init(movie);
+    this.#moviePresenters.set(movie.id, moviePresenter);
   };
 
   #renderMovies = (movies, from, to) => {
@@ -65,6 +73,13 @@ export default class FilmsPresenter {
 
   #renderButtonShowMore = () => {
     this.#showMorePresenter.init(this.#handleShowMoreButtonClick);
+  };
+
+  #clearMovieList = () => {
+    this.#moviePresenters.forEach((presenter) => presenter.destroy());
+    this.#moviePresenters.clear();
+    this.#renderedFilmCount = FILM_PER_PAGE;
+    remove(this.#showMorePresenter.newButtonShowMoreView);
   };
 
   #renderMenu = () => {
