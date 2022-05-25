@@ -7,7 +7,7 @@ import NewMenuView from '../view/new-menu-view.js';
 import NewFilterView from '../view/new-filter-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
-import {updateItem} from '../utils.js';
+import {updateItem, sortRatingUp, sortMovieDate} from '../utils.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -18,7 +18,9 @@ export default class FilmsPresenter {
   #comments = null;
   #renderedFilmCount = FILM_PER_PAGE;
   #newMenuView = null;
+  #newFilterView = null;
   #moviePresenters = new Map();
+  #sourceBoardMovies = [];
 
   constructor(FilmsContainer, MoviesModel) {
     this.#moviesModel = MoviesModel;
@@ -28,6 +30,7 @@ export default class FilmsPresenter {
   init() {
     this.#boardMovies = [...this.#moviesModel.movies];
     this.#comments = [...this.#moviesModel.comments];
+    this.#sourceBoardMovies =[...this.#moviesModel.movies];
     this.#renderBoard();
   }
 
@@ -36,7 +39,6 @@ export default class FilmsPresenter {
   #newFilmListContainerView = new NewFilmListContainerView;
   #showMorePresenter = new ShowMorePresenter(this.#newFilmsView.element);
   #newEmptyListView = new NewEmptyListView;
-  #newFilterView = new NewFilterView;
 
   #closeOpenedPopup = () => {
     const popup = document.querySelector('.film-details');
@@ -95,10 +97,39 @@ export default class FilmsPresenter {
     this.#renderMovies(this.#boardMovies, 0, Math.min(this.#boardMovies.length, FILM_PER_PAGE));
   };
 
+  #renderFilter = (callback) => {
+    this.#newFilterView = new NewFilterView;
+    this.#newFilterView.setClickSortHandler(callback);
+    render(this.#newFilterView, this.#FilmsContainer);
+  };
+
+  #sortByTotalRating = (sortType) => {
+    switch (sortType) {
+      case 'byRating':
+        this.#boardMovies.sort(sortRatingUp);
+        break;
+      case 'byDate':
+        this.#boardMovies.sort(sortMovieDate);
+        break;
+      default:
+        this.#boardMovies = [...this.#sourceBoardMovies];
+    }
+  };
+
+  #filterMovies = (data) => {
+    this.#sortByTotalRating(data);
+    this.#clearMovieList();
+    this.#renderFilmList();
+    this.#renderButtonShowMore();
+  };
+
   #renderBoard() {
     this.#renderMenu();
 
-    render(this.#newFilterView, this.#FilmsContainer);
+    if (this.#boardMovies.length > 0) {
+      this.#renderFilter(this.#filterMovies);
+    }
+
     render(this.#newFilmsView, this.#FilmsContainer);
     render(this.#newFilmListView, this.#newFilmsView.element);
     render(this.#newFilmListContainerView, this.#newFilmListView.element);

@@ -40,4 +40,35 @@ const updateItem = (items, update) => {
   ];
 };
 
-export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, updateItem};
+const sortRatingUp = (movieA, movieB) => {
+  if (movieA['film_info']['total_rating'] < movieB['film_info']['total_rating']) {
+    return 1; }
+  if (movieA['film_info']['total_rating'] > movieB['film_info']['total_rating']) {
+    return -1; }
+  return 0;
+};
+
+// Функция помещает задачи без даты в конце списка,
+// возвращая нужный вес для колбэка sort
+const getWeightForNullDate = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
+const sortMovieDate = (movieA, movieB) => {
+  const weight = getWeightForNullDate(movieA['film_info']['release']['date'], movieB['film_info']['release']['date']);
+  return weight ?? dayjs(movieB['film_info']['release']['date']).diff(dayjs(movieA['film_info']['release']['date']));
+};
+
+export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, updateItem, sortRatingUp, sortMovieDate};
