@@ -1,5 +1,5 @@
 import NewFilmCardView from '../view/new-film-card-view.js';
-import {render, replace} from '../framework/render.js';
+import {render, replace, remove} from '../framework/render.js';
 import NewPopupView from '../view/new-popup-view.js';
 
 export default class MoviePresenter {
@@ -37,6 +37,10 @@ export default class MoviePresenter {
     }
 
   }
+
+  destroy = () => {
+    remove(this.#movieCard);
+  };
 
   #renderPopup = (movie, comments, card, callback) => {
     const body = document.querySelector('body');

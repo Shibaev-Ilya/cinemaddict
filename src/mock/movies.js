@@ -58,7 +58,7 @@ const generateMovie = () => ({
       'Morgan Freeman', 'Silvester Stallone'
     ],
     'release': {
-      'date': '2019-05-11T00:00:00.000Z',
+      'date': `${getRandomInteger(1930, 1960)}-05-11T00:00:00.000Z`,
       'release_country': 'Finland'
     },
     'runtime': getRandomInteger(45, 150),
