@@ -1,5 +1,7 @@
-import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeTaskDueDate, getRuntime} from '../utils.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import {getRuntime, humanizeTaskDueDate} from '../utils.js';
+import {nanoid} from 'nanoid';
+import dayjs from 'dayjs';
 
 const createPopupTemplate = (movie, commentData) => {
 
@@ -38,19 +40,21 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getComments = () => {
     let commentsData = '';
-    for(const comment of comments) {
-      if (commentData[comment] === undefined) {
+    const movieComments = commentData.filter((comment) => comments.includes(comment['id']));
+    for(const comment of movieComments) {
+
+      if (comment === undefined) {
         continue;
       }
       commentsData += `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="./images/emoji/${commentData[comment]['emotion']}.png" width="55" height="55" alt="emoji-smile">
+              <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
             </span>
             <div>
-              <p class="film-details__comment-text">${commentData[comment]['comment']}</p>
+              <p class="film-details__comment-text">${comment['comment']}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${commentData[comment]['author']}</span>
-                <span class="film-details__comment-day">${humanizeTaskDueDate(commentData[comment]['date'], 'YYYY/MM/DD HH:mm')}</span>
+                <span class="film-details__comment-author">${comment['author']}</span>
+                <span class="film-details__comment-day">${humanizeTaskDueDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
@@ -177,28 +181,71 @@ const createPopupTemplate = (movie, commentData) => {
 </section>`;
 };
 
-export default class NewPopupView extends AbstractView {
-  #movie = null;
+export default class NewPopupView extends AbstractStatefulView {
   #comments = null;
+  #newComment = null;
+  #emoji = null;
 
   constructor(movie, comments) {
     super();
-    this.#movie = movie;
     this.#comments = comments;
+    this._state = NewPopupView.parseDataToState(movie);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createPopupTemplate(this.#movie, this.#comments);
+    return createPopupTemplate(this._state, this.#comments);
   }
 
-  setClickHandler = (callback) => {
-    this._callback.clickAddPopup = callback;
-    this.element.addEventListener('click', this.#clickAddPopupHandler);
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setClickCloseHandler(this._callback.click);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setWatchListClickHandler(this._callback.watchListClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
   };
 
-  #clickAddPopupHandler = (evt) => {
+  #setInnerHandlers = () => {
+    this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#clickEmojiHandler);
+    this.element.querySelector('.film-details__comment-label').addEventListener('keydown', this.#keydownInputHandler);
+  };
+
+  #clickEmojiHandler = (evt) => {
     evt.preventDefault();
-    this._callback.clickAddPopup();
+    if (evt.target.tagName !== 'IMG') {
+      return;
+    }
+    const imgContainer = this.element.querySelector('.film-details__add-emoji-label');
+    if (imgContainer.hasChildNodes()) {
+      imgContainer.innerHTML = '';
+    }
+    const inputId = evt.target.parentElement.getAttribute('for');
+    this.#emoji = this.element.querySelector(`#${inputId}`).value;
+    imgContainer.append(evt.target.cloneNode());
+  };
+
+  #keydownInputHandler = (evt) => {
+    if (evt.ctrlKey && evt.key === 'Enter') {
+      evt.preventDefault();
+      this.#newComment = {
+        'id': nanoid(5),
+        'author': 'Ilya O\'Reilly',
+        'comment': evt.target.value,
+        'date': humanizeTaskDueDate(dayjs(), 'YYYY/MM/DD HH:mm'),
+        'emotion': this.#emoji
+      };
+      this.#comments.push(this.#newComment);
+      this._state['comments'].push(this.#newComment['id']);
+      this._state.scrollPosition = {
+        'x': this.element.scrollLeft,
+        'y': this.element.scrollTop,
+        'height': this.element.scrollHeight,
+      };
+      this.updateElement( this._state);
+      const offset = this.element.scrollHeight - this._state.scrollPosition.height;
+      this.element.scrollTo( this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
+      this._callback.setFormSubmit(NewPopupView.parsStateToData(this._state));
+    }
   };
 
   setClickCloseHandler = (callback) => {
@@ -233,7 +280,6 @@ export default class NewPopupView extends AbstractView {
     evt.target.classList.toggle('film-details__control-button--active');
   };
 
-
   setWatchedClickHandler = (callback) => {
     this._callback.watchedClick = callback;
     this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#watchedHandler);
@@ -243,6 +289,18 @@ export default class NewPopupView extends AbstractView {
     evt.preventDefault();
     this._callback.watchedClick();
     evt.target.classList.toggle('film-details__control-button--active');
+  };
+
+  setFormSubmit = (callback) => {
+    this._callback.setFormSubmit = callback;
+  }
+
+  static parseDataToState = (movie) => ({...movie, scrollPosition: null});
+
+  static parsStateToData = (state) => {
+    const newData = {...state};
+    delete newData.scrollPosition;
+    return newData;
   };
 
 }

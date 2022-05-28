@@ -9,7 +9,7 @@ const words = text.split(' ');
 const getCommentData = (id, comment) => ({
   'id': id,
   'author': 'Ilya O\'Reilly',
-  'comment': comment,
+  'comment': `${id} ${comment}`,
   'date': '2019-05-11T16:12:32.554Z',
   'emotion': emotions[getRandomInteger(0, emotions.length -1)]
 });

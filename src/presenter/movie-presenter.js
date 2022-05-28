@@ -20,7 +20,6 @@ export default class MoviePresenter {
     const movieComponent = this.#movieCard;
 
     this.#movieCard = new NewFilmCardView(movie);
-
     this.#renderPopup(movie, this.#comments, this.#movieCard, this.#closePopup);
 
     this.#movieCard.setFavoriteClickHandler(this.#handleFavoriteClick);
@@ -49,6 +48,7 @@ export default class MoviePresenter {
     popupView.setWatchListClickHandler(this.#handleWatchListClick);
     popupView.setWatchedClickHandler(this.#handleWatchedClick);
     popupView.setFavoriteClickHandler(this.#handleFavoriteClick);
+    popupView.setFormSubmit(this.#handleFormSubmit);
 
     const removePopup = () => {
       body.classList.remove('hide-overflow');
@@ -86,5 +86,9 @@ export default class MoviePresenter {
 
   #handleWatchListClick = () => {
     this.#changeData({...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, watchlist: !this.#movieCard.movie.userDetails.watchlist}});
+  };
+
+  #handleFormSubmit = (task) => {
+    this.#changeData(task);
   };
 }
