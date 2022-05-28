@@ -293,7 +293,7 @@ export default class NewPopupView extends AbstractStatefulView {
 
   setFormSubmit = (callback) => {
     this._callback.setFormSubmit = callback;
-  }
+  };
 
   static parseDataToState = (movie) => ({...movie, scrollPosition: null});
 
