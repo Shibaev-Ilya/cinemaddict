@@ -1,14 +1,9 @@
+import Observable from '../framework/observable.js';
 import {generateMovie} from '../mock/movies.js';
-import {generateComments} from '../mock/comments.js';
 
-export default class MoviesModel {
+export default class MoviesModel extends Observable {
 
   #movies =  Array.from({length:  20}, generateMovie);
-  #comments = generateComments();
-
-  get comments() {
-    return this.#comments;
-  }
 
   get movies() {
     return this.#movies;

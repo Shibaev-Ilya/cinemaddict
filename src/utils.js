@@ -71,4 +71,10 @@ const sortMovieDate = (movieA, movieB) => {
   return weight ?? dayjs(movieB['film_info']['release']['date']).diff(dayjs(movieA['film_info']['release']['date']));
 };
 
-export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, updateItem, sortRatingUp, sortMovieDate};
+const SortType = {
+  DEFAULT: 'default',
+  SORT_DATE: 'sort-date',
+  SORT_RATING: 'sort-rating',
+};
+
+export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, updateItem, sortRatingUp, sortMovieDate, SortType};
