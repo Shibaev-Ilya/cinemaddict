@@ -1,6 +1,7 @@
 import NewFilmCardView from '../view/new-film-card-view.js';
 import {render, replace, remove} from '../framework/render.js';
 import NewPopupView from '../view/new-popup-view.js';
+import {UserAction, ActionType} from '../utils.js';
 
 export default class MoviePresenter {
   #filmListContainer = null;
@@ -77,18 +78,34 @@ export default class MoviePresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, favorite: !this.#movieCard.movie.userDetails.favorite}});
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      {...this.#movieCard.movie, userDetails: {...this.#movieCard.movie.userDetails, favorite: !this.#movieCard.movie.userDetails.favorite}}
+    );
   };
 
   #handleWatchedClick = () => {
-    this.#changeData({...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, alreadyWatched: !this.#movieCard.movie.userDetails.alreadyWatched}});
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      {...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, alreadyWatched: !this.#movieCard.movie.userDetails.alreadyWatched}}
+    );
   };
 
   #handleWatchListClick = () => {
-    this.#changeData({...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, watchlist: !this.#movieCard.movie.userDetails.watchlist}});
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      {...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, watchlist: !this.#movieCard.movie.userDetails.watchlist}}
+    );
   };
 
   #handleFormSubmit = (task) => {
-    this.#changeData(task);
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      task
+    );
   };
 }

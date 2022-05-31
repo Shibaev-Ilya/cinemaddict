@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {SortType} from '../utils.js'
+import {SortType} from '../utils.js';
 
 const createNewFilterTemplate = () => (
   `<ul class="sort">

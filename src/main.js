@@ -1,6 +1,6 @@
 import FilmsPresenter from './presenter/films-presenter.js';
 import MoviesModel from './model/movies-model.js';
-import CommentsModel from "./model/comments-model.js";
+import CommentsModel from './model/comments-model.js';
 
 const MAIN_CONTAINER = document.querySelector('.main');
 

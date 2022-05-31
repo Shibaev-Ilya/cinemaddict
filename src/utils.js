@@ -26,20 +26,6 @@ const getRuntime = (time) => {
   return `${hours}h ${minutes}m`;
 };
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 const sortRatingUp = (movieA, movieB) => {
   if (movieA['film_info']['total_rating'] < movieB['film_info']['total_rating']) {
     return 1; }
@@ -77,4 +63,16 @@ const SortType = {
   SORT_RATING: 'sort-rating',
 };
 
-export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, updateItem, sortRatingUp, sortMovieDate, SortType};
+const UserAction = {
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+  UPDATE_DETAILS: 'UPDATE_DETAILS',
+};
+
+const ActionType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType};

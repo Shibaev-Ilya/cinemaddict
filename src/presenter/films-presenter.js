@@ -7,7 +7,7 @@ import NewMenuView from '../view/new-menu-view.js';
 import NewFilterView from '../view/new-filter-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
-import {updateItem, sortRatingUp, sortMovieDate, SortType} from '../utils.js';
+import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType} from '../utils.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -26,6 +26,8 @@ export default class FilmsPresenter {
     this.#moviesModel = MoviesModel;
     this.#commentsModel = CommentsModel;
     this.#FilmsContainer = FilmsContainer;
+
+    this.#moviesModel.addObserver(this.#handleModelEvent);
   }
 
   get movies() {
@@ -38,6 +40,7 @@ export default class FilmsPresenter {
 
     return this.#moviesModel.movies;
   }
+
   get comments() {
     return this.#commentsModel.comments;
   }
@@ -60,13 +63,42 @@ export default class FilmsPresenter {
     }
   };
 
-  #handleMovieChange = (updatedTask) => {
-    // Здесь будем вызывать обновление модели
-    this.#moviePresenters.get(updatedTask.id).init(updatedTask);
+  #handleViewAction = (actionType, updateType, update) => {
+    //console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_DETAILS:
+        this.#moviesModel.updateMovie(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this.#commentsModel.addComment(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this.#commentsModel.deleteComment(updateType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    //console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    switch (updateType) {
+      case ActionType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this.#moviePresenters.get(data.id).init(data);
+        break;
+      case ActionType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        this.#moviePresenters.get(data.id).init(data);
+        break;
+      case ActionType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        this.#moviePresenters.get(data.id).init(data);
+        break;
+    }
   };
 
   #renderMovie = (movie, comments, callback) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, comments, callback, this.#handleMovieChange);
+    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, comments, callback, this.#handleViewAction);
     moviePresenter.init(movie);
     this.#moviePresenters.set(movie.id, moviePresenter);
   };
@@ -116,7 +148,6 @@ export default class FilmsPresenter {
     if (moviesCount > FILM_PER_PAGE) {
       this.#renderButtonShowMore();
     }
-    this.#renderButtonShowMore();
   };
 
   #renderFilter = (callback) => {
