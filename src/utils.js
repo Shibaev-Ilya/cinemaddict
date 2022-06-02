@@ -63,6 +63,13 @@ const SortType = {
   SORT_RATING: 'sort-rating',
 };
 
+const FilterType = {
+  FILTER_ALL: 'all',
+  FILTER_WATCHLIST: 'watchlist',
+  FILTER_HISTORY: 'history',
+  FILTER_FAVORITES: 'favorites',
+};
+
 const UserAction = {
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
@@ -75,4 +82,4 @@ const ActionType = {
   MAJOR: 'MAJOR',
 };
 
-export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType};
+export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType};

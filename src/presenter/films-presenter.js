@@ -22,6 +22,12 @@ export default class FilmsPresenter {
   #moviePresenters = new Map();
   #currentSortType = SortType.DEFAULT;
 
+  #newFilmsView = new NewFilmsView;
+  #newFilmListView = new NewFilmListView;
+  #newFilmListContainerView = new NewFilmListContainerView;
+  #showMorePresenter = new ShowMorePresenter(this.#newFilmsView.element);
+  #newEmptyListView = new NewEmptyListView;
+
   constructor(FilmsContainer, MoviesModel, CommentsModel) {
     this.#moviesModel = MoviesModel;
     this.#commentsModel = CommentsModel;
@@ -50,12 +56,6 @@ export default class FilmsPresenter {
     this.#renderBoard();
   }
 
-  #newFilmsView = new NewFilmsView;
-  #newFilmListView = new NewFilmListView;
-  #newFilmListContainerView = new NewFilmListContainerView;
-  #showMorePresenter = new ShowMorePresenter(this.#newFilmsView.element);
-  #newEmptyListView = new NewEmptyListView;
-
   #closeOpenedPopup = () => {
     const popup = document.querySelector('.film-details');
     if(popup !== null) {
@@ -83,16 +83,15 @@ export default class FilmsPresenter {
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case ActionType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this.#moviePresenters.get(data.id).init(data);
         break;
       case ActionType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
-        this.#moviePresenters.get(data.id).init(data);
+        this.#clearBoard();
+        this.#renderBoard();
         break;
       case ActionType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
-        this.#moviePresenters.get(data.id).init(data);
+        this.#clearBoard({resetRenderedMovieCount: true, resetSortType: true});
+        this.#renderBoard();
         break;
     }
   };
@@ -124,13 +123,6 @@ export default class FilmsPresenter {
     this.#showMorePresenter.init(this.#handleShowMoreButtonClick);
   };
 
-  #clearMovieList = () => {
-    this.#moviePresenters.forEach((presenter) => presenter.destroy());
-    this.#moviePresenters.clear();
-    this.#renderedFilmCount = FILM_PER_PAGE;
-    remove(this.#showMorePresenter.newButtonShowMoreView);
-  };
-
   #renderFilter = () => {
     this.#newFilterView = new NewFilterView(this.movies);
     render(this.#newFilterView, this.#FilmsContainer);
@@ -140,46 +132,66 @@ export default class FilmsPresenter {
     render(this.#newEmptyListView, this.#newFilmListContainerView.element);
   };
 
-  #renderFilmList = () => {
-    const moviesCount = this.movies.length;
-    const movies = this.movies.slice(0, Math.min(moviesCount,FILM_PER_PAGE));
-    this.#renderMovies(movies);
+  #renderFilmList = (movies) => {
+    const moviesCount = movies.length;
+    this.#renderMovies(movies.slice(0, Math.min(moviesCount, this.#renderedFilmCount)));
 
-    if (moviesCount > FILM_PER_PAGE) {
+    if (moviesCount > this.#renderedFilmCount) {
       this.#renderButtonShowMore();
     }
   };
 
-  #renderSort = (callback) => {
-    this.#newSortView = new NewSortView;
-    this.#newSortView.setClickSortHandler(callback);
+  #renderSort = () => {
+    this.#newSortView = new NewSortView(this.#currentSortType);
+    this.#newSortView.setClickSortHandler(this.#sortMovies);
     render(this.#newSortView, this.#FilmsContainer);
   };
 
-
   #sortMovies = (data) => {
     this.#currentSortType = data;
-    this.#clearMovieList();
-    this.#renderFilmList();
+    this.#clearBoard();
+    this.#renderBoard();
+  };
+
+  #clearBoard = ({resetRenderedMovieCount = false, resetSortType = false} = {}) => {
+
+    this.#moviePresenters.forEach((presenter) => presenter.destroy());
+    this.#moviePresenters.clear();
+
+    remove(this.#newFilterView);
+    remove(this.#newSortView);
+    remove(this.#newEmptyListView);
+    remove(this.#showMorePresenter.newButtonShowMoreView);
+
+    if (resetRenderedMovieCount) {
+      this.#renderedFilmCount = FILM_PER_PAGE;
+    }
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
+    }
   };
 
   #renderBoard() {
+    const movies = this.movies;
+    const taskCount = movies.length;
+
     this.#renderFilter();
 
-    if (this.movies.length > 0) {
-      this.#renderSort(this.#sortMovies);
+    if (taskCount > 0) {
+      this.#renderSort();
     }
 
     render(this.#newFilmsView, this.#FilmsContainer);
     render(this.#newFilmListView, this.#newFilmsView.element);
     render(this.#newFilmListContainerView, this.#newFilmListView.element);
 
-    if (this.movies.length <= 0) {
+    if (taskCount === 0) {
       this.#renderEmptyList();
       return;
     }
 
-    this.#renderFilmList();
+    this.#renderFilmList(movies);
 
   }
 }
