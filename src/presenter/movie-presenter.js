@@ -38,6 +38,38 @@ export default class MoviePresenter {
 
   }
 
+  #handleFavoriteClick = () => {
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      {...this.#movieCard.movie, userDetails: {...this.#movieCard.movie.userDetails, favorite: !this.#movieCard.movie.userDetails.favorite}}
+    );
+  };
+
+  #handleWatchedClick = () => {
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      {...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, alreadyWatched: !this.#movieCard.movie.userDetails.alreadyWatched}}
+    );
+  };
+
+  #handleWatchListClick = () => {
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      {...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, watchlist: !this.#movieCard.movie.userDetails.watchlist}}
+    );
+  };
+
+  #handleFormSubmit = (task) => {
+    this.#changeData(
+      UserAction.UPDATE_DETAILS,
+      ActionType.MINOR,
+      task
+    );
+  };
+
   destroy = () => {
     remove(this.#movieCard);
   };
@@ -75,37 +107,5 @@ export default class MoviePresenter {
     };
 
     card.setClickAddPopupHandler(addPopup);
-  };
-
-  #handleFavoriteClick = () => {
-    this.#changeData(
-      UserAction.UPDATE_DETAILS,
-      ActionType.MINOR,
-      {...this.#movieCard.movie, userDetails: {...this.#movieCard.movie.userDetails, favorite: !this.#movieCard.movie.userDetails.favorite}}
-    );
-  };
-
-  #handleWatchedClick = () => {
-    this.#changeData(
-      UserAction.UPDATE_DETAILS,
-      ActionType.MINOR,
-      {...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, alreadyWatched: !this.#movieCard.movie.userDetails.alreadyWatched}}
-    );
-  };
-
-  #handleWatchListClick = () => {
-    this.#changeData(
-      UserAction.UPDATE_DETAILS,
-      ActionType.MINOR,
-      {...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, watchlist: !this.#movieCard.movie.userDetails.watchlist}}
-    );
-  };
-
-  #handleFormSubmit = (task) => {
-    this.#changeData(
-      UserAction.UPDATE_DETAILS,
-      ActionType.MINOR,
-      task
-    );
   };
 }

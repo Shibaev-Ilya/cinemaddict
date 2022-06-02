@@ -3,8 +3,8 @@ import NewFilmsView from '../view/new-films-view.js';
 import NewFilmListView from '../view/new-film-list-view.js';
 import NewFilmListContainerView from '../view/new-film-list-container-view.js';
 import NewEmptyListView from '../view/new-empty-view.js';
-import NewMenuView from '../view/new-menu-view.js';
 import NewFilterView from '../view/new-filter-view.js';
+import NewSortView from '../view/new-sort-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
 import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType} from '../utils.js';
@@ -17,8 +17,8 @@ export default class FilmsPresenter {
   #FilmsContainer = null;
   #comments = null;
   #renderedFilmCount = FILM_PER_PAGE;
-  #newMenuView = null;
   #newFilterView = null;
+  #newSortView = null;
   #moviePresenters = new Map();
   #currentSortType = SortType.DEFAULT;
 
@@ -131,9 +131,9 @@ export default class FilmsPresenter {
     remove(this.#showMorePresenter.newButtonShowMoreView);
   };
 
-  #renderMenu = () => {
-    this.#newMenuView = new NewMenuView(this.movies);
-    render(this.#newMenuView, this.#FilmsContainer);
+  #renderFilter = () => {
+    this.#newFilterView = new NewFilterView(this.movies);
+    render(this.#newFilterView, this.#FilmsContainer);
   };
 
   #renderEmptyList = () => {
@@ -150,24 +150,24 @@ export default class FilmsPresenter {
     }
   };
 
-  #renderFilter = (callback) => {
-    this.#newFilterView = new NewFilterView;
-    this.#newFilterView.setClickSortHandler(callback);
-    render(this.#newFilterView, this.#FilmsContainer);
+  #renderSort = (callback) => {
+    this.#newSortView = new NewSortView;
+    this.#newSortView.setClickSortHandler(callback);
+    render(this.#newSortView, this.#FilmsContainer);
   };
 
 
-  #filterMovies = (data) => {
+  #sortMovies = (data) => {
     this.#currentSortType = data;
     this.#clearMovieList();
     this.#renderFilmList();
   };
 
   #renderBoard() {
-    this.#renderMenu();
+    this.#renderFilter();
 
     if (this.movies.length > 0) {
-      this.#renderFilter(this.#filterMovies);
+      this.#renderSort(this.#sortMovies);
     }
 
     render(this.#newFilmsView, this.#FilmsContainer);
