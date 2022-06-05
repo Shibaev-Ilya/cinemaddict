@@ -3,16 +3,16 @@ import NewFilmsView from '../view/new-films-view.js';
 import NewFilmListView from '../view/new-film-list-view.js';
 import NewFilmListContainerView from '../view/new-film-list-container-view.js';
 import NewEmptyListView from '../view/new-empty-view.js';
-import NewFilterView from '../view/new-filter-view.js';
 import NewSortView from '../view/new-sort-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
-import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType} from '../utils.js';
+import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, filter} from '../utils.js';
 
 const FILM_PER_PAGE = 5;
 
 export default class FilmsPresenter {
   #moviesModel = null;
+  #filterModel = null;
   #commentsModel = null;
   #FilmsContainer = null;
   #comments = null;
@@ -28,23 +28,29 @@ export default class FilmsPresenter {
   #showMorePresenter = new ShowMorePresenter(this.#newFilmsView.element);
   #newEmptyListView = new NewEmptyListView;
 
-  constructor(FilmsContainer, MoviesModel, CommentsModel) {
+  constructor(FilmsContainer, MoviesModel, CommentsModel, FilterModel) {
     this.#moviesModel = MoviesModel;
     this.#commentsModel = CommentsModel;
     this.#FilmsContainer = FilmsContainer;
+    this.#filterModel = FilterModel;
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get movies() {
+    const filterType = this.#filterModel.filter;
+    const movies = this.#moviesModel.movies;
+    const filteredMovies = filter[filterType](movies);
+
     switch (this.#currentSortType) {
       case SortType.SORT_RATING:
-        return [...this.#moviesModel.movies].sort(sortRatingUp);
+        return filteredMovies.sort(sortRatingUp);
       case SortType.SORT_DATE:
-        return [...this.#moviesModel.movies].sort(sortMovieDate);
+        return filteredMovies.sort(sortMovieDate);
     }
 
-    return this.#moviesModel.movies;
+    return filteredMovies;
   }
 
   get comments() {
@@ -123,11 +129,6 @@ export default class FilmsPresenter {
     this.#showMorePresenter.init(this.#handleShowMoreButtonClick);
   };
 
-  #renderFilter = () => {
-    this.#newFilterView = new NewFilterView(this.movies);
-    render(this.#newFilterView, this.#FilmsContainer);
-  };
-
   #renderEmptyList = () => {
     render(this.#newEmptyListView, this.#newFilmListContainerView.element);
   };
@@ -175,8 +176,6 @@ export default class FilmsPresenter {
   #renderBoard() {
     const movies = this.movies;
     const taskCount = movies.length;
-
-    this.#renderFilter();
 
     if (taskCount > 0) {
       this.#renderSort();

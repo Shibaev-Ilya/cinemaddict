@@ -70,6 +70,13 @@ const FilterType = {
   FILTER_FAVORITES: 'favorites',
 };
 
+const filter = {
+  [FilterType.FILTER_ALL]: (movies) => movies,
+  [FilterType.FILTER_WATCHLIST]: (movies) => movies.filter((movie) => movie.userDetails.watchlist),
+  [FilterType.FILTER_HISTORY]: (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched),
+  [FilterType.FILTER_FAVORITES]: (movies) => movies.filter((movie) => movie.userDetails.favorite),
+};
+
 const UserAction = {
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
@@ -82,4 +89,4 @@ const ActionType = {
   MAJOR: 'MAJOR',
 };
 
-export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType};
+export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType, filter};
