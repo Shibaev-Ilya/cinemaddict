@@ -6,7 +6,7 @@ import NewEmptyListView from '../view/new-empty-view.js';
 import NewSortView from '../view/new-sort-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
-import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, filter} from '../utils.js';
+import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, filter, FilterType} from '../utils.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -21,12 +21,13 @@ export default class FilmsPresenter {
   #newSortView = null;
   #moviePresenters = new Map();
   #currentSortType = SortType.DEFAULT;
+  #filterType = FilterType.FILTER_ALL;
+  #newEmptyListView = null;
 
   #newFilmsView = new NewFilmsView;
   #newFilmListView = new NewFilmListView;
   #newFilmListContainerView = new NewFilmListContainerView;
   #showMorePresenter = new ShowMorePresenter(this.#newFilmsView.element);
-  #newEmptyListView = new NewEmptyListView;
 
   constructor(FilmsContainer, MoviesModel, CommentsModel, FilterModel) {
     this.#moviesModel = MoviesModel;
@@ -39,9 +40,9 @@ export default class FilmsPresenter {
   }
 
   get movies() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const movies = this.#moviesModel.movies;
-    const filteredMovies = filter[filterType](movies);
+    const filteredMovies = filter[this.#filterType](movies);
 
     switch (this.#currentSortType) {
       case SortType.SORT_RATING:
@@ -130,6 +131,7 @@ export default class FilmsPresenter {
   };
 
   #renderEmptyList = () => {
+    this.#newEmptyListView = new NewEmptyListView(this.#filterType);
     render(this.#newEmptyListView, this.#newFilmListContainerView.element);
   };
 
