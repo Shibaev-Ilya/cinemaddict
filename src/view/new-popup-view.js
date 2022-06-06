@@ -42,11 +42,10 @@ const createPopupTemplate = (movie, commentData) => {
     let commentsData = '';
     const movieComments = commentData.filter((comment) => comments.includes(comment['id']));
     for(const comment of movieComments) {
-
       if (comment === undefined) {
         continue;
       }
-      commentsData += `<li class="film-details__comment">
+      commentsData += `<li class="film-details__comment js-comment" data-comment-id="${comment.id}">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
             </span>
@@ -55,7 +54,7 @@ const createPopupTemplate = (movie, commentData) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment['author']}</span>
                 <span class="film-details__comment-day">${humanizeTaskDueDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button class="film-details__comment-delete js-delete-comment">Delete</button>
               </p>
             </div>
           </li>`;
@@ -190,7 +189,7 @@ export default class NewPopupView extends AbstractStatefulView {
     super();
     this.#comments = comments;
     this._state = NewPopupView.parseDataToState(movie);
-    this.#setInnerHandlers();
+    this.setInnerHandlers();
   }
 
   get template() {
@@ -198,14 +197,29 @@ export default class NewPopupView extends AbstractStatefulView {
   }
 
   _restoreHandlers = () => {
-    this.#setInnerHandlers();
+    this.setInnerHandlers(this._callback.addNewComment);
     this.setClickCloseHandler(this._callback.click);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setWatchListClickHandler(this._callback.watchListClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setClickDeleteHandler(this._callback.deleteClick);
   };
 
-  #setInnerHandlers = () => {
+  setClickDeleteHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelectorAll('.js-comment').forEach((el) => el.addEventListener('click', this.#clickDeleteHandler));
+  };
+
+  #clickDeleteHandler = (evt) => {
+    evt.preventDefault();
+    if (evt.target.classList.contains('js-delete-comment')) {
+      const commentId = evt.currentTarget.dataset.commentId;
+      this._callback.deleteClick(this.#comments[commentId]);
+    }
+  };
+
+  setInnerHandlers = (callback) => {
+    this._callback.addNewComment = callback;
     this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#clickEmojiHandler);
     this.element.querySelector('.film-details__comment-label').addEventListener('keydown', this.#keydownInputHandler);
   };
@@ -245,6 +259,7 @@ export default class NewPopupView extends AbstractStatefulView {
       const offset = this.element.scrollHeight - this._state.scrollPosition.height;
       this.element.scrollTo( this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
       this._callback.setFormSubmit(NewPopupView.parsStateToData(this._state));
+      this._callback.addNewComment(this.#newComment);
     }
   };
 

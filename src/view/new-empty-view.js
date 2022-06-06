@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {FilterType} from "../utils.js";
+import {FilterType} from '../utils.js';
 
 const emptyListText = {
   [FilterType.FILTER_ALL] : 'There are no movies in our database',

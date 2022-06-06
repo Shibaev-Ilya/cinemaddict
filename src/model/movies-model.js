@@ -13,7 +13,7 @@ export default class MoviesModel extends Observable {
     const index = this.#movies.findIndex((movie) => movie.id === movie.id);
 
     if (index === -1) {
-      throw new Error('Can\'t update unexisting task');
+      throw new Error('Can\'t update unexisting movie');
     }
 
     this.#movies = [

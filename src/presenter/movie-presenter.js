@@ -74,6 +74,22 @@ export default class MoviePresenter {
     remove(this.#movieCard);
   };
 
+  #handleDeleteComment = (data) => {
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      ActionType.MINOR,
+      data
+    );
+  };
+
+  #handleAddNewComment = (data) => {
+    this.#changeData(
+      UserAction.ADD_COMMENT,
+      ActionType.MINOR,
+      data
+    );
+  };
+
   #renderPopup = (movie, comments, card, callback) => {
     const body = document.querySelector('body');
     const popupView = new NewPopupView(movie, comments);
@@ -82,6 +98,8 @@ export default class MoviePresenter {
     popupView.setWatchedClickHandler(this.#handleWatchedClick);
     popupView.setFavoriteClickHandler(this.#handleFavoriteClick);
     popupView.setFormSubmit(this.#handleFormSubmit);
+    popupView.setClickDeleteHandler(this.#handleDeleteComment);
+    popupView.setInnerHandlers(this.#handleAddNewComment);
 
     const removePopup = () => {
       body.classList.remove('hide-overflow');
