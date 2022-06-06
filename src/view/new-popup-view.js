@@ -2,6 +2,7 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {getRuntime, humanizeTaskDueDate} from '../utils.js';
 import {nanoid} from 'nanoid';
 import dayjs from 'dayjs';
+import he from 'he';
 
 const createPopupTemplate = (movie, commentData) => {
 
@@ -50,7 +51,7 @@ const createPopupTemplate = (movie, commentData) => {
               <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
             </span>
             <div>
-              <p class="film-details__comment-text">${comment['comment']}</p>
+              <p class="film-details__comment-text">${he.encode(comment['comment'])}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment['author']}</span>
                 <span class="film-details__comment-day">${humanizeTaskDueDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
