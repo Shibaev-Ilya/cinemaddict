@@ -28,8 +28,6 @@ export default class CommentsModel extends Observable {
       ...this.#comments.slice(index + 1),
     ];
 
-    console.log(this.#comments);
-
     this._notify(updateType, update);
   };
 
