@@ -1,6 +1,5 @@
 import NewFilmCardView from '../view/new-film-card-view.js';
 import {render, replace, remove} from '../framework/render.js';
-import NewPopupView from '../view/new-popup-view.js';
 import {UserAction, ActionType} from '../utils.js';
 
 export default class MoviePresenter {
@@ -8,20 +7,17 @@ export default class MoviePresenter {
   #movieCard = null;
   #changeData = null;
   #comments = null;
-  #closePopup = null;
 
-  constructor(filmListContainer, comments, closePopup, changeData) {
+  constructor(filmListContainer, comments, changeData) {
     this.#filmListContainer = filmListContainer;
     this.#changeData = changeData;
     this.#comments = comments;
-    this.#closePopup = closePopup;
   }
 
   init(movie) {
     const movieComponent = this.#movieCard;
 
     this.#movieCard = new NewFilmCardView(movie);
-    this.#renderPopup(movie, this.#comments, this.#movieCard, this.#closePopup);
 
     this.#movieCard.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#movieCard.setWatchedClickHandler(this.#handleWatchedClick);
@@ -36,6 +32,10 @@ export default class MoviePresenter {
       replace(this.#movieCard, movieComponent);
     }
 
+  }
+
+  get movieCard() {
+    return this.#movieCard;
   }
 
   #handleFavoriteClick = () => {
@@ -62,68 +62,8 @@ export default class MoviePresenter {
     );
   };
 
-  #handleFormSubmit = (task) => {
-    this.#changeData(
-      UserAction.UPDATE_DETAILS,
-      ActionType.MINOR,
-      task
-    );
-  };
-
   destroy = () => {
     remove(this.#movieCard);
   };
 
-  #handleDeleteComment = (data) => {
-    this.#changeData(
-      UserAction.DELETE_COMMENT,
-      ActionType.MINOR,
-      data
-    );
-  };
-
-  #handleAddNewComment = (data) => {
-    this.#changeData(
-      UserAction.ADD_COMMENT,
-      ActionType.MINOR,
-      data
-    );
-  };
-
-  #renderPopup = (movie, comments, card, callback) => {
-    const body = document.querySelector('body');
-    const popupView = new NewPopupView(movie, comments);
-
-    popupView.setWatchListClickHandler(this.#handleWatchListClick);
-    popupView.setWatchedClickHandler(this.#handleWatchedClick);
-    popupView.setFavoriteClickHandler(this.#handleFavoriteClick);
-    popupView.setFormSubmit(this.#handleFormSubmit);
-    popupView.setClickDeleteHandler(this.#handleDeleteComment);
-    popupView.setInnerHandlers(this.#handleAddNewComment);
-
-    const removePopup = () => {
-      body.classList.remove('hide-overflow');
-      popupView.element.remove();
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
-    function onEscKeyDown(evt) {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        removePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    }
-
-    const addPopup = () => {
-      callback();
-
-      body.classList.add('hide-overflow');
-      body.append(popupView.element);
-      popupView.setClickCloseHandler(removePopup);
-      document.addEventListener('keydown', onEscKeyDown);
-    };
-
-    card.setClickAddPopupHandler(addPopup);
-  };
 }

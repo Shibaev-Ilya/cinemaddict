@@ -7,6 +7,7 @@ import NewSortView from '../view/new-sort-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
 import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, filter, FilterType} from '../utils.js';
+import PopupPresenter from './popup-presenter';
 
 const FILM_PER_PAGE = 5;
 
@@ -64,13 +65,6 @@ export default class FilmsPresenter {
     this.#renderBoard();
   }
 
-  #closeOpenedPopup = () => {
-    const popup = document.querySelector('.film-details');
-    if(popup !== null) {
-      popup.remove();
-    }
-  };
-
   #handleViewAction = (actionType, updateType, update) => {
     //console.log(actionType, updateType, update);
     switch (actionType) {
@@ -104,14 +98,17 @@ export default class FilmsPresenter {
     }
   };
 
-  #renderMovie = (movie, comments, callback) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, comments, callback, this.#handleViewAction);
+  #renderMovie = (movie, comments) => {
+    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, comments, this.#handleViewAction);
     moviePresenter.init(movie);
     this.#moviePresenters.set(movie.id, moviePresenter);
+
+    const popupPresenter = new PopupPresenter(movie, comments, moviePresenter.movieCard, this.#handleViewAction);
+    popupPresenter.init();
   };
 
   #renderMovies = (movies) => {
-    movies.forEach((movie) => this.#renderMovie(movie, this.#comments, this.#closeOpenedPopup));
+    movies.forEach((movie) => this.#renderMovie(movie, this.#comments));
   };
 
   #handleShowMoreButtonClick = () => {
