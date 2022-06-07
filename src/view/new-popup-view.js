@@ -348,4 +348,40 @@ export default class NewPopupView extends AbstractStatefulView {
     return newData;
   };
 
+  #removePopup = (cb) => {
+    const body = document.querySelector('body');
+    body.classList.remove('hide-overflow');
+    const imgContainer = this.element.querySelector('.film-details__add-emoji-label');
+    if (imgContainer.hasChildNodes()) {
+      imgContainer.innerHTML = '';
+    }
+    this.element.querySelector('form').reset();
+    this.element.remove();
+    document.removeEventListener('keydown', cb);
+  };
+
+  #onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.#removePopup();
+      document.removeEventListener('keydown', this.#onEscKeyDown);
+    }
+  };
+
+  #closeOpenedPopup = () => {
+    const popup = document.querySelector('.film-details');
+    if(popup !== null) {
+      popup.remove();
+    }
+  };
+
+  addPopup = () => {
+    const body = document.querySelector('body');
+    this.#closeOpenedPopup();
+    body.classList.add('hide-overflow');
+    body.append(this.element);
+    this.setClickCloseHandler(this.#removePopup);
+    document.addEventListener('keydown', this.#onEscKeyDown);
+  };
+
 }

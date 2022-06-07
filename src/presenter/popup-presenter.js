@@ -22,15 +22,7 @@ export default class PopupPresenter {
     this.#renderPopup();
   }
 
-  #closeOpenedPopup = () => {
-    const popup = document.querySelector('.film-details');
-    if(popup !== null) {
-      popup.remove();
-    }
-  };
-
   #renderPopup = () => {
-    const body = document.querySelector('body');
 
     this.#newPopupView.setWatchListClickHandler(this.#handleWatchListClick);
     this.#newPopupView.setWatchedClickHandler(this.#handleWatchedClick);
@@ -40,29 +32,7 @@ export default class PopupPresenter {
     this.#newPopupView.setClickDeleteHandler(this.#handleDeleteComment);
     this.#newPopupView.setAddCommentHandlers(this.#handleAddNewComment);
 
-    const removePopup = () => {
-      body.classList.remove('hide-overflow');
-      this.#newPopupView.element.remove();
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
-    function onEscKeyDown(evt) {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        removePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    }
-
-    const addPopup = () => {
-      this.#closeOpenedPopup();
-      body.classList.add('hide-overflow');
-      body.append(this.#newPopupView.element);
-      this.#newPopupView.setClickCloseHandler(removePopup);
-      document.addEventListener('keydown', onEscKeyDown);
-    };
-
-    this.#movieCard.setClickAddPopupHandler(addPopup);
+    this.#movieCard.setClickAddPopupHandler(this.#newPopupView.addPopup);
   };
 
   #handleFormSubmit = (task) => {
