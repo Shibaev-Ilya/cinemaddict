@@ -66,7 +66,6 @@ export default class FilmsPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    //console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_DETAILS:
         this.#moviesModel.updateMovie(updateType, update);
@@ -81,8 +80,6 @@ export default class FilmsPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    //console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case ActionType.PATCH:
         this.#moviePresenters.get(data.id).init(data);
