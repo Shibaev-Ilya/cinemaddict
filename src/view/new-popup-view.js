@@ -212,6 +212,18 @@ export default class NewPopupView extends AbstractStatefulView {
     this.setClickDeleteHandler(this._callback.deleteClick);
   };
 
+  #updateStateElement = () => {
+    this._state.scrollPosition = {
+      'x': this.element.scrollLeft,
+      'y': this.element.scrollTop,
+      'height': this.element.scrollHeight,
+    };
+    this.updateElement(this._state);
+    const offset = this.element.scrollHeight - this._state.scrollPosition.height;
+    this.element.scrollTo(this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
+    this._callback.setFormStateToDataSubmit(NewPopupView.parsStateToData(this._state));
+  };
+
   setClickDeleteHandler = (callback) => {
     this._callback.deleteClick = callback;
     this.element.querySelectorAll('.js-comment').forEach((el) => el.addEventListener('click', this.#clickDeleteHandler));
@@ -230,18 +242,8 @@ export default class NewPopupView extends AbstractStatefulView {
         ...this._state['comments'].slice(index + 1),
       ];
 
-      this._state.scrollPosition = {
-        'x': this.element.scrollLeft,
-        'y': this.element.scrollTop,
-        'height': this.element.scrollHeight,
-      };
+      this.#updateStateElement();
 
-      this.updateElement(this._state);
-
-      const offset = this.element.scrollHeight - this._state.scrollPosition.height;
-      this.element.scrollTo(this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
-
-      this._callback.setFormStateToDataSubmit(NewPopupView.parsStateToData(this._state));
       this._callback.deleteClick(commentId);
     }
   };
@@ -280,16 +282,9 @@ export default class NewPopupView extends AbstractStatefulView {
       };
       this.#comments.push(this.#newComment);
       this._state['comments'].push(this.#newComment['id']);
-      this._state.scrollPosition = {
-        'x': this.element.scrollLeft,
-        'y': this.element.scrollTop,
-        'height': this.element.scrollHeight,
-      };
-      this.updateElement(this._state);
-      const offset = this.element.scrollHeight - this._state.scrollPosition.height;
-      this.element.scrollTo(this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
-      this._callback.setFormStateToDataSubmit(NewPopupView.parsStateToData(this._state));
+      this.#updateStateElement();
       this._callback.addNewComment(this.#newComment);
+      this.#emoji = 'smile';
     }
   };
 
@@ -311,7 +306,8 @@ export default class NewPopupView extends AbstractStatefulView {
   #favoriteHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
-    evt.target.classList.toggle('film-details__control-button--active');
+    this._state['userDetails']['favorite'] = !this._state['userDetails']['favorite'];
+    this.#updateStateElement();
   };
 
   setWatchListClickHandler = (callback) => {
@@ -322,7 +318,8 @@ export default class NewPopupView extends AbstractStatefulView {
   #watchListHandler = (evt) => {
     evt.preventDefault();
     this._callback.watchListClick();
-    evt.target.classList.toggle('film-details__control-button--active');
+    this._state['userDetails']['watchlist'] = !this._state['userDetails']['watchlist'];
+    this.#updateStateElement();
   };
 
   setWatchedClickHandler = (callback) => {
@@ -333,7 +330,8 @@ export default class NewPopupView extends AbstractStatefulView {
   #watchedHandler = (evt) => {
     evt.preventDefault();
     this._callback.watchedClick();
-    evt.target.classList.toggle('film-details__control-button--active');
+    this._state['userDetails']['alreadyWatched'] = !this._state['userDetails']['alreadyWatched'];
+    this.#updateStateElement();
   };
 
   setFormStateToDataSubmit = (callback) => {
