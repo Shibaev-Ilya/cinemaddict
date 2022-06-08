@@ -26,20 +26,6 @@ const getRuntime = (time) => {
   return `${hours}h ${minutes}m`;
 };
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 const sortRatingUp = (movieA, movieB) => {
   if (movieA['film_info']['total_rating'] < movieB['film_info']['total_rating']) {
     return 1; }
@@ -71,4 +57,36 @@ const sortMovieDate = (movieA, movieB) => {
   return weight ?? dayjs(movieB['film_info']['release']['date']).diff(dayjs(movieA['film_info']['release']['date']));
 };
 
-export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, updateItem, sortRatingUp, sortMovieDate};
+const SortType = {
+  DEFAULT: 'default',
+  SORT_DATE: 'sort-date',
+  SORT_RATING: 'sort-rating',
+};
+
+const FilterType = {
+  FILTER_ALL: 'all',
+  FILTER_WATCHLIST: 'watchlist',
+  FILTER_HISTORY: 'history',
+  FILTER_FAVORITES: 'favorites',
+};
+
+const filter = {
+  [FilterType.FILTER_ALL]: (movies) => movies,
+  [FilterType.FILTER_WATCHLIST]: (movies) => movies.filter((movie) => movie.userDetails.watchlist),
+  [FilterType.FILTER_HISTORY]: (movies) => movies.filter((movie) => movie.userDetails.alreadyWatched),
+  [FilterType.FILTER_FAVORITES]: (movies) => movies.filter((movie) => movie.userDetails.favorite),
+};
+
+const UserAction = {
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+  UPDATE_DETAILS: 'UPDATE_DETAILS',
+};
+
+const ActionType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType, filter};

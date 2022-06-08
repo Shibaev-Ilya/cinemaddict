@@ -1,40 +1,51 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createNewFilterTemplate = () => (
-  `<ul class="sort">
-    <li><a href="#" class="sort__button" data-sort-type="default">Sort by default</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="byDate">Sort by date</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="byRating">Sort by rating</a></li>
-  </ul>`
-);
+const createNewFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
+
+  return (`
+    <a href="#${type}"
+    class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
+    data-filter-type="${type}">
+    ${name}
+    ${type !== 'all' ? `<span class="main-navigation__item-count">${  count  }</span>` : ''}
+    </a>
+  `);
+};
+
+const createNewFilterTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems
+    .map((filter) => createNewFilterItemTemplate(filter, currentFilterType))
+    .join('');
+
+  return `<nav class="main-navigation">
+    ${filterItemsTemplate}
+  </nav>`;
+};
 
 export default class NewFilterView extends AbstractView {
 
-  get template() {
-    return createNewFilterTemplate();
+  #filters = null;
+  #currentFilter = null;
+
+  constructor(filters, currentFilterType) {
+    super();
+    this.#filters = filters;
+    this.#currentFilter = currentFilterType;
   }
 
-  setClickSortHandler = (callback) => {
-    this._callback.clickSortButton = callback;
-    this.element.addEventListener('click', this.#clickSortHandler);
+  get template() {
+    return createNewFilterTemplate(this.#filters, this.#currentFilter);
+  }
+
+  setClickFilterHandler = (callback) => {
+    this._callback.clickFilterButton = callback;
+    this.element.querySelectorAll('a').forEach( (el) => el.addEventListener('click', this.#clickFilterHandler));
   };
 
-  #clickSortHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
-      return;
-    }
+  #clickFilterHandler = (evt) => {
     evt.preventDefault();
-
-    if (evt.target.classList.contains('sort__button--active')) {
-      evt.target.classList.remove('sort__button--active');
-      this._callback.clickSortButton('default');
-    } else {
-      if (this.element.querySelector('.sort__button--active')) {
-        this.element.querySelector('.sort__button--active').classList.remove('sort__button--active');
-      }
-      evt.target.classList.add('sort__button--active');
-      this._callback.clickSortButton(evt.target.dataset.sortType);
-    }
+    this._callback.clickFilterButton(evt.currentTarget.dataset.filterType);
   };
 
 }

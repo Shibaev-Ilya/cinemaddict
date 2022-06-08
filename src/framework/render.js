@@ -23,7 +23,7 @@ const createElement = (template) => {
 /**
  * Функция для отрисовки элемента
  * @param {AbstractView} component Компонент, который должен был отрисован
- * @param {HTMLElement} container Элемент в котором будет отрисован компонент
+ * @param {Element} container Элемент в котором будет отрисован компонент
  * @param {string} place Позиция компонента относительно контейнера. По умолчанию - `beforeend`
  */
 const render = (component, container, place = RenderPosition.BEFOREEND) => {
