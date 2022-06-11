@@ -20,7 +20,7 @@ const createNewFilmCardTemplate = (movie) => {
   const getGenres = (genre) => genre.join(', ');
   const commentsAmount = comments.length > 1 ? `${comments.length} comments` : `${comments.length} comment`;
 
-  return `<article class="film-card">
+  return `<article class="film-card" data-id="${movie.id}">
           <a class="film-card__link">
             <h3 class="film-card__title">${filmInfo['title']}</h3>
             <p class="film-card__rating">${filmInfo['total_rating']}</p>
@@ -63,7 +63,8 @@ export default class NewFilmCardView extends AbstractView {
     if (buttons) {
       return;
     }
-    this._callback.clickAddPopup();
+    const filmId = evt.currentTarget.dataset.id;
+    this._callback.clickAddPopup(filmId);
   };
 
   setFavoriteClickHandler = (callback) => {

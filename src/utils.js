@@ -80,6 +80,7 @@ const filter = {
 const UserAction = {
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
+  GET_COMMENTS: 'GET_COMMENTS',
   UPDATE_DETAILS: 'UPDATE_DETAILS',
 };
 
@@ -87,6 +88,8 @@ const ActionType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  COMMENTS_INIT: 'COMMENTS_INIT',
 };
 
 export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType, filter};

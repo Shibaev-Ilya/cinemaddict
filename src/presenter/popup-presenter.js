@@ -5,17 +5,15 @@ export default class PopupPresenter {
 
   #newPopupView = null;
   #movie = null;
-  #comments = null;
   #movieCard = null;
   #changeData = null;
 
 
-  constructor(movie, comments, cardView, changeData) {
+  constructor(movie, cardView, changeData) {
     this.#movie = movie;
-    this.#comments = comments;
     this.#movieCard = cardView;
     this.#changeData = changeData;
-    this.#newPopupView = new NewPopupView(movie, comments);
+    this.#newPopupView = new NewPopupView(movie);
   }
 
   init() {
@@ -23,7 +21,6 @@ export default class PopupPresenter {
   }
 
   #renderPopup = () => {
-
     this.#newPopupView.setWatchListClickHandler(this.#handleWatchListClick);
     this.#newPopupView.setWatchedClickHandler(this.#handleWatchedClick);
     this.#newPopupView.setFavoriteClickHandler(this.#handleFavoriteClick);
@@ -31,15 +28,14 @@ export default class PopupPresenter {
     this.#newPopupView.setFormStateToDataSubmit(this.#handleFormSubmit);
     this.#newPopupView.setClickDeleteHandler(this.#handleDeleteComment);
     this.#newPopupView.setAddCommentHandlers(this.#handleAddNewComment);
-
-    this.#movieCard.setClickAddPopupHandler(this.#newPopupView.addPopup);
+    this.#movieCard.setClickAddPopupHandler(this.#handleGetComments);
   };
 
-  #handleFormSubmit = (task) => {
+  #handleFormSubmit = (movie) => {
     this.#changeData(
       UserAction.UPDATE_DETAILS,
       ActionType.MINOR,
-      task
+      movie
     );
   };
 
@@ -56,6 +52,15 @@ export default class PopupPresenter {
       UserAction.ADD_COMMENT,
       ActionType.MINOR,
       data
+    );
+  };
+
+  #handleGetComments = (movieId) => {
+    this.#newPopupView.addPopup();
+    this.#changeData(
+      UserAction.GET_COMMENTS,
+      ActionType.COMMENTS_INIT,
+      movieId
     );
   };
 

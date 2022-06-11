@@ -188,13 +188,13 @@ const createPopupTemplate = (movie, commentData) => {
 };
 
 export default class NewPopupView extends AbstractStatefulView {
-  #comments = null;
+  #comments = [];
+  #movieId = null;
   #newComment = null;
   #emoji = 'smile';
 
-  constructor(movie, comments) {
+  constructor(movie) {
     super();
-    this.#comments = comments;
     this._state = NewPopupView.parseDataToState(movie);
     this.setAddCommentHandlers();
   }
@@ -252,6 +252,11 @@ export default class NewPopupView extends AbstractStatefulView {
     this._callback.addNewComment = callback;
     this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#clickEmojiHandler);
     this.element.querySelector('.film-details__comment-label').addEventListener('keydown', this.#addCommentHandler);
+  };
+
+  getAllComments = (callback) => {
+    this._callback.getComments = callback;
+    this._callback.getComments(this.#movieId);
   };
 
   #clickEmojiHandler = (evt) => {
@@ -373,7 +378,8 @@ export default class NewPopupView extends AbstractStatefulView {
     }
   };
 
-  addPopup = () => {
+  addPopup = (id) => {
+    this.#movieId = id;
     const body = document.querySelector('body');
     this.#closeOpenedPopup();
     body.classList.add('hide-overflow');

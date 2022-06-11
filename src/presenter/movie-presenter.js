@@ -6,12 +6,10 @@ export default class MoviePresenter {
   #filmListContainer = null;
   #movieCard = null;
   #changeData = null;
-  #comments = null;
 
-  constructor(filmListContainer, comments, changeData) {
+  constructor(filmListContainer, changeData) {
     this.#filmListContainer = filmListContainer;
     this.#changeData = changeData;
-    this.#comments = comments;
   }
 
   init(movie) {

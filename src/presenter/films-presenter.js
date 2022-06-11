@@ -7,7 +7,8 @@ import NewSortView from '../view/new-sort-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
 import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, filter, FilterType} from '../utils.js';
-import PopupPresenter from './popup-presenter';
+import PopupPresenter from './popup-presenter.js';
+import LoadingView from '../view/loading-view.js';
 
 const FILM_PER_PAGE = 5;
 
@@ -29,6 +30,8 @@ export default class FilmsPresenter {
   #newFilmListView = new NewFilmListView;
   #newFilmListContainerView = new NewFilmListContainerView;
   #showMorePresenter = new ShowMorePresenter(this.#newFilmsView.element);
+  #loadingComponent = new LoadingView();
+  #isLoading = true;
 
   constructor(FilmsContainer, MoviesModel, CommentsModel, FilterModel) {
     this.#moviesModel = MoviesModel;
@@ -48,24 +51,20 @@ export default class FilmsPresenter {
 
     switch (this.#currentSortType) {
       case SortType.SORT_RATING:
-        return filteredMovies.sort(sortRatingUp);
+        return filteredMovies.slice().sort(sortRatingUp);
       case SortType.SORT_DATE:
-        return filteredMovies.sort(sortMovieDate);
+        return filteredMovies.slice().sort(sortMovieDate);
     }
 
     return filteredMovies;
   }
 
-  get comments() {
-    return this.#commentsModel.comments;
-  }
-
   init() {
-    this.#comments = [...this.#commentsModel.comments];
     this.#renderBoard();
   }
 
   #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_DETAILS:
         this.#moviesModel.updateMovie(updateType, update);
@@ -76,10 +75,14 @@ export default class FilmsPresenter {
       case UserAction.DELETE_COMMENT:
         this.#commentsModel.deleteComment(updateType, update);
         break;
+      case UserAction.GET_COMMENTS:
+        this.#commentsModel.getComments(updateType, update);
+        break;
     }
   };
 
   #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
     switch (updateType) {
       case ActionType.PATCH:
         this.#moviePresenters.get(data.id).init(data);
@@ -92,15 +95,28 @@ export default class FilmsPresenter {
         this.#clearBoard({resetRenderedMovieCount: true, resetSortType: true});
         this.#renderBoard();
         break;
+      case ActionType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
+      case ActionType.COMMENTS_INIT:
+        this.#comments = this.#commentsModel.comments;
+        console.log(this.#comments);
+        break;
     }
   };
 
-  #renderMovie = (movie, comments) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, comments, this.#handleViewAction);
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#newFilmListContainerView.element);
+  };
+
+  #renderMovie = (movie) => {
+    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, this.#handleViewAction);
     moviePresenter.init(movie);
     this.#moviePresenters.set(movie.id, moviePresenter);
 
-    const popupPresenter = new PopupPresenter(movie, comments, moviePresenter.movieCard, this.#handleViewAction);
+    const popupPresenter = new PopupPresenter(movie, moviePresenter.movieCard, this.#handleViewAction);
     popupPresenter.init();
   };
 
@@ -111,8 +127,8 @@ export default class FilmsPresenter {
   #handleShowMoreButtonClick = () => {
     const moviesCount = this.movies.length;
     const newRenderedMovieCount = Math.min(moviesCount, this.#renderedFilmCount + FILM_PER_PAGE);
-    const tasks = this.movies.slice(this.#renderedFilmCount, newRenderedMovieCount);
-    this.#renderMovies(tasks);
+    const movies = this.movies.slice(this.#renderedFilmCount, newRenderedMovieCount);
+    this.#renderMovies(movies);
     this.#renderedFilmCount += FILM_PER_PAGE;
 
     if (moviesCount <= this.#renderedFilmCount) {
@@ -159,6 +175,7 @@ export default class FilmsPresenter {
     remove(this.#newFilterView);
     remove(this.#newSortView);
     remove(this.#newEmptyListView);
+    remove(this.#loadingComponent);
     remove(this.#showMorePresenter.newButtonShowMoreView);
 
     if (resetRenderedMovieCount) {
@@ -171,6 +188,12 @@ export default class FilmsPresenter {
   };
 
   #renderBoard() {
+
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const movies = this.movies;
     const taskCount = movies.length;
 
