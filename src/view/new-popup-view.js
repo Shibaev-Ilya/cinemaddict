@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import he from 'he';
 
 const createPopupTemplate = (movie, commentData) => {
-
   const filmInfo = movie['film_info'];
   const comments = movie['comments'];
 
@@ -189,14 +188,16 @@ const createPopupTemplate = (movie, commentData) => {
 
 export default class NewPopupView extends AbstractStatefulView {
   #comments = [];
-  #movieId = null;
   #newComment = null;
   #emoji = 'smile';
 
-  constructor(movie) {
+  constructor(movie, comments) {
     super();
     this._state = NewPopupView.parseDataToState(movie);
     this.setAddCommentHandlers();
+    this.#comments = comments;
+    this.addPopup();
+    this.updateElement(this._state);
   }
 
   get template() {
@@ -252,11 +253,6 @@ export default class NewPopupView extends AbstractStatefulView {
     this._callback.addNewComment = callback;
     this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#clickEmojiHandler);
     this.element.querySelector('.film-details__comment-label').addEventListener('keydown', this.#addCommentHandler);
-  };
-
-  getAllComments = (callback) => {
-    this._callback.getComments = callback;
-    this._callback.getComments(this.#movieId);
   };
 
   #clickEmojiHandler = (evt) => {
@@ -378,8 +374,7 @@ export default class NewPopupView extends AbstractStatefulView {
     }
   };
 
-  addPopup = (id) => {
-    this.#movieId = id;
+  addPopup = () => {
     const body = document.querySelector('body');
     this.#closeOpenedPopup();
     body.classList.add('hide-overflow');

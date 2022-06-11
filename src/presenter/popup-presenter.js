@@ -13,10 +13,11 @@ export default class PopupPresenter {
     this.#movie = movie;
     this.#movieCard = cardView;
     this.#changeData = changeData;
-    this.#newPopupView = new NewPopupView(movie);
+
   }
 
-  init() {
+  init(comments) {
+    this.#newPopupView = new NewPopupView(this.#movie, comments);
     this.#renderPopup();
   }
 
@@ -28,7 +29,6 @@ export default class PopupPresenter {
     this.#newPopupView.setFormStateToDataSubmit(this.#handleFormSubmit);
     this.#newPopupView.setClickDeleteHandler(this.#handleDeleteComment);
     this.#newPopupView.setAddCommentHandlers(this.#handleAddNewComment);
-    this.#movieCard.setClickAddPopupHandler(this.#handleGetComments);
   };
 
   #handleFormSubmit = (movie) => {
@@ -52,15 +52,6 @@ export default class PopupPresenter {
       UserAction.ADD_COMMENT,
       ActionType.MINOR,
       data
-    );
-  };
-
-  #handleGetComments = (movieId) => {
-    this.#newPopupView.addPopup();
-    this.#changeData(
-      UserAction.GET_COMMENTS,
-      ActionType.COMMENTS_INIT,
-      movieId
     );
   };
 

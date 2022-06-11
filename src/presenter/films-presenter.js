@@ -7,7 +7,6 @@ import NewSortView from '../view/new-sort-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
 import {sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, filter, FilterType} from '../utils.js';
-import PopupPresenter from './popup-presenter.js';
 import LoadingView from '../view/loading-view.js';
 
 const FILM_PER_PAGE = 5;
@@ -98,9 +97,6 @@ export default class FilmsPresenter {
         remove(this.#loadingComponent);
         this.#renderBoard();
         break;
-      case ActionType.COMMENTS_INIT:
-        this.#comments = this.#commentsModel.comments;
-        break;
     }
   };
 
@@ -109,12 +105,9 @@ export default class FilmsPresenter {
   };
 
   #renderMovie = (movie) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, this.#handleViewAction);
+    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, this.#handleViewAction, this.#commentsModel);
     moviePresenter.init(movie);
     this.#moviePresenters.set(movie.id, moviePresenter);
-
-    const popupPresenter = new PopupPresenter(movie, moviePresenter.movieCard, this.#handleViewAction);
-    popupPresenter.init();
   };
 
   #renderMovies = (movies) => {
