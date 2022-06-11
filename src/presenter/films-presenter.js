@@ -64,7 +64,6 @@ export default class FilmsPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_DETAILS:
         this.#moviesModel.updateMovie(updateType, update);
@@ -82,7 +81,6 @@ export default class FilmsPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     switch (updateType) {
       case ActionType.PATCH:
         this.#moviePresenters.get(data.id).init(data);
@@ -102,7 +100,6 @@ export default class FilmsPresenter {
         break;
       case ActionType.COMMENTS_INIT:
         this.#comments = this.#commentsModel.comments;
-        console.log(this.#comments);
         break;
     }
   };

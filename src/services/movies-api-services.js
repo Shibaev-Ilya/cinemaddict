@@ -26,13 +26,14 @@ export default class MoviesApiService extends ApiService {
 
   #adaptToServer = (movie) => {
     const adaptedMovie = {...movie,
+      /* eslint-disable */
       user_details: {
         watchlist: movie.userDetails.watchlist,
         already_watched: movie.userDetails.alreadyWatched,
         watching_date: movie.userDetails.watchingDate,
         favorite: movie.userDetails.favorite,
       },
-
+      /* eslint-enable */
     };
 
     delete adaptedMovie.userDetails;

@@ -1,5 +1,4 @@
 import Observable from '../framework/observable';
-import {ActionType} from "../utils";
 
 export default class CommentsModel extends Observable {
 
@@ -16,7 +15,6 @@ export default class CommentsModel extends Observable {
   }
 
   getComments = async (updateType, movieId) => {
-console.log(movieId);
     try {
       this.#comments = await this.#commentsApiService.getComments(movieId);
     } catch(err) {

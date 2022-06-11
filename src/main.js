@@ -4,7 +4,7 @@ import CommentsModel from './model/comments-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import FilterModel from './model/filter-model.js';
 import MoviesApiService from './services/movies-api-services.js';
-import CommentsApiService from "./services/comments-api-services.js";
+import CommentsApiService from './services/comments-api-services.js';
 
 const MAIN_CONTAINER = document.querySelector('.main');
 const AUTHORIZATION = 'Basic KUfexEPWmTWDBtSuwggN';

@@ -1,5 +1,5 @@
 import Observable from '../framework/observable.js';
-import {ActionType} from "../utils.js";
+import {ActionType} from '../utils.js';
 
 export default class MoviesModel extends Observable {
 
