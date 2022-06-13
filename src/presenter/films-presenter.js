@@ -56,12 +56,7 @@ export default class FilmsPresenter {
     return filteredMovies;
   }
 
-  get comments() {
-    return this.#commentsModel.comments;
-  }
-
   init() {
-    this.#comments = [...this.#commentsModel.comments];
     this.#renderBoard();
   }
 
@@ -95,17 +90,15 @@ export default class FilmsPresenter {
     }
   };
 
-  #renderMovie = (movie, comments) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, comments, this.#handleViewAction);
+  #renderMovie = (movie) => {
+    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, this.#commentsModel, this.#handleViewAction);
     moviePresenter.init(movie);
-    this.#moviePresenters.set(movie.id, moviePresenter);
 
-    const popupPresenter = new PopupPresenter(movie, comments, moviePresenter.movieCard, this.#handleViewAction);
-    popupPresenter.init();
+    this.#moviePresenters.set(movie.id, moviePresenter);
   };
 
   #renderMovies = (movies) => {
-    movies.forEach((movie) => this.#renderMovie(movie, this.#comments));
+    movies.forEach((movie) => this.#renderMovie(movie));
   };
 
   #handleShowMoreButtonClick = () => {

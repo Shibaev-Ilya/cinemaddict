@@ -41,8 +41,7 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getComments = () => {
     let commentsData = '';
-    const movieComments = commentData.filter((comment) => comments.includes(comment['id']));
-    for (const comment of movieComments) {
+    for (const comment of commentData) {
       if (comment === undefined) {
         continue;
       }

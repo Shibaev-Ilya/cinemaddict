@@ -1,17 +1,18 @@
 import NewFilmCardView from '../view/new-film-card-view.js';
 import {render, replace, remove} from '../framework/render.js';
 import {UserAction, ActionType} from '../utils.js';
+import PopupPresenter from "./popup-presenter";
 
 export default class MoviePresenter {
   #filmListContainer = null;
   #movieCard = null;
   #changeData = null;
-  #comments = null;
+  #commentsModel = null;
 
-  constructor(filmListContainer, comments, changeData) {
+  constructor(filmListContainer, commentsModel, changeData) {
     this.#filmListContainer = filmListContainer;
+    this.#commentsModel = commentsModel;
     this.#changeData = changeData;
-    this.#comments = comments;
   }
 
   init(movie) {
@@ -22,6 +23,7 @@ export default class MoviePresenter {
     this.#movieCard.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#movieCard.setWatchedClickHandler(this.#handleWatchedClick);
     this.#movieCard.setWatchListClickHandler(this.#handleWatchListClick);
+    this.#movieCard.setClickAddPopupHandler(this.#handleAddPopupClick);
 
     if (movieComponent === null) {
       render(this.#movieCard, this.#filmListContainer);
@@ -60,6 +62,11 @@ export default class MoviePresenter {
       ActionType.MINOR,
       {...this.#movieCard.movie, userDetails: { ...this.#movieCard.movie.userDetails, watchlist: !this.#movieCard.movie.userDetails.watchlist}}
     );
+  };
+
+  #handleAddPopupClick = (movie) => {
+    const popupPresenter = new PopupPresenter(movie, this.#commentsModel, this.movieCard, this.#changeData);
+    popupPresenter.init();
   };
 
   destroy = () => {

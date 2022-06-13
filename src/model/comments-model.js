@@ -9,6 +9,10 @@ export default class CommentsModel extends Observable {
     return this.#comments;
   }
 
+  getComments = (filmId) => {
+    return this.#comments[filmId];
+  }
+
   addComment = (updateType, update) => {
     this.#comments = [
       update,
