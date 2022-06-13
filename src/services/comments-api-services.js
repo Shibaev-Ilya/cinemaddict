@@ -8,10 +8,8 @@ const Method = {
 
 export default class CommentsApiService extends ApiService {
 
-  getComments = (filmId) => {
-    return this._load({url: `/comments/${filmId}`})
-      .then(ApiService.parseResponse)
-  };
+  getComments = (filmId) => this._load({url: `/comments/${filmId}`})
+    .then(ApiService.parseResponse);
 
   addComment = async (comment) => {
     const response = await this._load({
@@ -24,11 +22,9 @@ export default class CommentsApiService extends ApiService {
     return await ApiService.parseResponse(response);
   };
 
-  deleteComment = async (commentId) => {
-    return await this._load({
-      url: `comments/${commentId}`,
-      method: Method.DELETE,
-    });
-  }
+  deleteComment = async (commentId) => await this._load({
+    url: `comments/${commentId}`,
+    method: Method.DELETE,
+  });
 
 }

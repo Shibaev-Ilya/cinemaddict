@@ -11,7 +11,6 @@ export default class PopupPresenter {
   #comments = [];
 
 
-
   constructor(movie, commentsModel, cardView, changeData) {
     this.#movie = movie;
     this.#commentsModel = commentsModel;

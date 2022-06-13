@@ -228,7 +228,6 @@ export default class NewPopupView extends AbstractStatefulView {
   };
 
   #clickDeleteHandler = (evt) => {
-    console.log(this._state);
     evt.preventDefault();
     if (evt.target.classList.contains('js-delete-comment')) {
       const commentId = evt.currentTarget.dataset.commentId;
