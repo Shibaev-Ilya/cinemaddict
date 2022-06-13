@@ -1,5 +1,5 @@
 import {render, replace, remove} from '../framework/render.js';
-import NewFilterView from '../view/new-filter-view.js';
+import FilterView from '../view/filter-view.js';
 import {filter, FilterType, ActionType} from '../utils.js';
 
 export default class FilterPresenter {
@@ -50,7 +50,7 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new NewFilterView(filters, this.#filterModel.filter);
+    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
     this.#filterComponent.setClickFilterHandler(this.#handleFilterTypeChange);
 
     if (prevFilterComponent === null) {

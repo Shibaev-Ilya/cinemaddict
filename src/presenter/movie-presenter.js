@@ -1,4 +1,4 @@
-import NewFilmCardView from '../view/new-film-card-view.js';
+import FilmCardView from '../view/film-card-view.js';
 import {render, replace, remove} from '../framework/render.js';
 import {UserAction, ActionType} from '../utils.js';
 import PopupPresenter from './popup-presenter.js';
@@ -23,7 +23,7 @@ export default class MoviePresenter {
   init(movie) {
     const movieComponent = this.#movieCard;
 
-    this.#movieCard = new NewFilmCardView(movie);
+    this.#movieCard = new FilmCardView(movie);
 
     this.#movieCard.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#movieCard.setWatchedClickHandler(this.#handleWatchedClick);

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {humanizeTaskDueDate, getRuntime} from '../utils.js';
+import {humanizeDate, getRuntime} from '../utils.js';
 
 const createNewFilmCardTemplate = (movie) => {
 
@@ -25,7 +25,7 @@ const createNewFilmCardTemplate = (movie) => {
             <h3 class="film-card__title">${filmInfo['title']}</h3>
             <p class="film-card__rating">${filmInfo['total_rating']}</p>
             <p class="film-card__info">
-              <span class="film-card__year">${humanizeTaskDueDate(filmInfo['release']['date'], 'YYYY')}</span>
+              <span class="film-card__year">${humanizeDate(filmInfo['release']['date'], 'YYYY')}</span>
               <span class="film-card__duration">${getRuntime(filmInfo['runtime'])}</span>
               <span class="film-card__genre">${getGenres(filmInfo['genre'])}</span>
             </p>
@@ -41,7 +41,7 @@ const createNewFilmCardTemplate = (movie) => {
         </article>`;
 };
 
-export default class NewFilmCardView extends AbstractView {
+export default class FilmCardView extends AbstractView {
 
   constructor(movie) {
     super();

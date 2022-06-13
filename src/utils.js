@@ -18,7 +18,7 @@ const getRandomPositiveFloat = (a, b, digits = 1) => {
   return +result.toFixed(digits);
 };
 
-const humanizeTaskDueDate = (dueDate, format) => dayjs(dueDate).format(format);
+const humanizeDate = (dueDate, format) => dayjs(dueDate).format(format);
 
 const getRuntime = (time) => {
   const minutes = time % 60;
@@ -92,4 +92,4 @@ const ActionType = {
   COMMENTS_INIT: 'COMMENTS_INIT',
 };
 
-export {getRandomInteger, getRandomPositiveFloat, humanizeTaskDueDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType, filter};
+export {getRandomInteger, getRandomPositiveFloat, humanizeDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType, filter};

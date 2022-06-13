@@ -1,13 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createNoTaskTemplate = () => (
-  `<p class="board__no-tasks">
-    Loading...
-  </p>`
+const createLoadingMoviesTemplate = () => (
+  '<h2 class="films-list__title">Loading...</h2>'
 );
 
 export default class LoadingView extends AbstractView {
   get template() {
-    return createNoTaskTemplate();
+    return createLoadingMoviesTemplate();
   }
 }

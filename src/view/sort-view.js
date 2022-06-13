@@ -7,7 +7,7 @@ const createNewFilterTemplate = (currentSortType) => (`<ul class="sort">
     <li><a href="#" class="sort__button ${currentSortType === SortType.SORT_RATING ? 'sort__button--active': ''}" data-sort-type="${SortType.SORT_RATING}">Sort by rating</a></li>
   </ul>`);
 
-export default class NewSortView extends AbstractView {
+export default class SortView extends AbstractView {
   #currentSortType = null;
 
   constructor (sortType) {
@@ -25,11 +25,12 @@ export default class NewSortView extends AbstractView {
   };
 
   #clickSortHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
+    const sortType = evt.target.dataset.sortType;
+    if (evt.target.tagName !== 'A' || this.#currentSortType === sortType) {
       return;
     }
     evt.preventDefault();
-    this._callback.clickSortButton(evt.target.dataset.sortType);
+    this._callback.clickSortButton(sortType);
   };
 
 }

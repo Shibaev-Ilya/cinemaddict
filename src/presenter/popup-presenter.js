@@ -1,4 +1,4 @@
-import NewPopupView from '../view/new-popup-view.js';
+import PopupView from '../view/popup-view.js';
 import {ActionType, UserAction} from '../utils.js';
 
 export default class PopupPresenter {
@@ -20,7 +20,7 @@ export default class PopupPresenter {
   }
 
   init() {
-    this.#newPopupView = new NewPopupView(this.#movie);
+    this.#newPopupView = new PopupView(this.#movie);
     this.#renderPopup();
     this.#loadComments();
   }

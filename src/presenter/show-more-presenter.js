@@ -1,9 +1,9 @@
-import NewButtonShowMoreView from '../view/new-button-show-more-view.js';
+import ButtonShowMoreView from '../view/button-show-more-view.js';
 import {render} from '../framework/render';
 
 export default class ShowMorePresenter {
 
-  #newButtonShowMoreView = new NewButtonShowMoreView;
+  #newButtonShowMoreView = new ButtonShowMoreView;
   #buttonContainer = null;
 
   constructor(container) {

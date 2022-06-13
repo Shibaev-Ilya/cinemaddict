@@ -6,19 +6,19 @@ import FilterModel from './model/filter-model.js';
 import MoviesApiService from './services/movies-api-services.js';
 import CommentsApiService from './services/comments-api-services.js';
 
-const MAIN_CONTAINER = document.querySelector('.main');
-const AUTHORIZATION = 'Basic KUfexEPWmTWDBtSuwggN';
-const END_POINT = 'https://17.ecmascript.pages.academy/cinemaddict';
-const MOVIES_API_SERVICE = new MoviesApiService(END_POINT, AUTHORIZATION);
-const COMMENTS_API_SERVICE = new CommentsApiService(END_POINT, AUTHORIZATION);
+const mainContainer = document.querySelector('.main');
+const authorization = 'Basic KUfexEPWmTWDBtSuwggN';
+const endPoint = 'https://17.ecmascript.pages.academy/cinemaddict';
+const moviesApiService = new MoviesApiService(endPoint, authorization);
+const commentsApiService = new CommentsApiService(endPoint, authorization);
 
-const MOVIES_MODEL = new MoviesModel(MOVIES_API_SERVICE);
-const COMMENTS_MODEL = new CommentsModel(COMMENTS_API_SERVICE);
-const FILTER_MODEL = new FilterModel;
-const FILMS_PRESENTER = new FilmsPresenter(MAIN_CONTAINER, MOVIES_MODEL, COMMENTS_MODEL, FILTER_MODEL);
-const FILTER_PRESENTER = new FilterPresenter(MAIN_CONTAINER, FILTER_MODEL, MOVIES_MODEL);
+const moviesModel = new MoviesModel(moviesApiService);
+const commentsModel = new CommentsModel(commentsApiService);
+const filterModel = new FilterModel;
+const filmsPresenter = new FilmsPresenter(mainContainer, moviesModel, commentsModel, filterModel);
+const filterPresenter = new FilterPresenter(mainContainer, filterModel, moviesModel);
 
 
-FILTER_PRESENTER.init();
-FILMS_PRESENTER.init();
-MOVIES_MODEL.init();
+filterPresenter.init();
+filmsPresenter.init();
+moviesModel.init();

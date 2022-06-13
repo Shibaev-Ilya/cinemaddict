@@ -6,7 +6,7 @@ const createNewFilmListTemplate = () => (
   </section>`
 );
 
-export default class NewFilmListView extends AbstractView {
+export default class FilmListView extends AbstractView {
 
   get template() {
     return createNewFilmListTemplate();

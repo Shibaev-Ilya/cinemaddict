@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {getRuntime, humanizeTaskDueDate} from '../utils.js';
+import {getRuntime, humanizeDate} from '../utils.js';
 import {nanoid} from 'nanoid';
 import dayjs from 'dayjs';
 import he from 'he';
@@ -28,11 +28,9 @@ const createPopupTemplate = (movie) => {
     genres.forEach((genre) => {
       container.list += `<span class="film-details__genre">${genre}</span>`;
     });
-    if (genres.length > 1) {
-      container.title = 'Genres';
-    } else {
-      container.title = 'Genre';
-    }
+
+    container.title = genres.length > 1 ? 'Genres': 'Genre';
+
     return container;
   };
 
@@ -53,7 +51,7 @@ const createPopupTemplate = (movie) => {
               <p class="film-details__comment-text">${he.encode(comment['comment'])}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment['author']}</span>
-                <span class="film-details__comment-day">${humanizeTaskDueDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
+                <span class="film-details__comment-day">${humanizeDate(comment['date'], 'YYYY/MM/DD HH:mm')}</span>
                 <button class="film-details__comment-delete js-delete-comment">Delete</button>
               </p>
             </div>
@@ -107,7 +105,7 @@ const createPopupTemplate = (movie) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${humanizeTaskDueDate(filmInfo['release']['date'], 'DD MMMM YYYY')}</td>
+              <td class="film-details__cell">${humanizeDate(filmInfo['release']['date'], 'DD MMMM YYYY')}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
@@ -187,13 +185,13 @@ const createPopupTemplate = (movie) => {
 </section>`;
 };
 
-export default class NewPopupView extends AbstractStatefulView {
+export default class PopupView extends AbstractStatefulView {
   #newComment = null;
   #emoji = 'smile';
 
   constructor(movie) {
     super();
-    this._state = NewPopupView.parseDataToState({...movie, comments: []});
+    this._state = PopupView.parseDataToState({...movie, comments: []});
     this.addPopup();
   }
 
@@ -219,7 +217,7 @@ export default class NewPopupView extends AbstractStatefulView {
     this.updateElement(this._state);
     const offset = this.element.scrollHeight - this._state.scrollPosition.height;
     this.element.scrollTo(this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
-    this._callback.setFormStateToDataSubmit(NewPopupView.parsStateToData(this._state));
+    this._callback.setFormStateToDataSubmit(PopupView.parseStateToData(this._state));
   };
 
   setClickDeleteHandler = (callback) => {
@@ -275,7 +273,7 @@ export default class NewPopupView extends AbstractStatefulView {
         'id': nanoid(5),
         'author': 'Ilya O\'Reilly',
         'comment': evt.target.value,
-        'date': humanizeTaskDueDate(dayjs(), 'YYYY/MM/DD HH:mm'),
+        'date': humanizeDate(dayjs(), 'YYYY/MM/DD HH:mm'),
         'emotion': this.#emoji
       };
       this._state['comments'].push(this.#newComment);
@@ -338,7 +336,7 @@ export default class NewPopupView extends AbstractStatefulView {
 
   static parseDataToState = (movie) => ({...movie, scrollPosition: null});
 
-  static parsStateToData = (state) => {
+  static parseStateToData = (state) => {
     const newData = {...state};
     delete newData.scrollPosition;
     return newData;
