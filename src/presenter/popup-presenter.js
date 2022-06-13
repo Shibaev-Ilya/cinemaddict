@@ -5,20 +5,25 @@ export default class PopupPresenter {
 
   #newPopupView = null;
   #movie = null;
+  #commentsModel = null;
   #movieCard = null;
   #changeData = null;
+  #comments = [];
 
 
-  constructor(movie, cardView, changeData) {
+
+  constructor(movie, commentsModel, cardView, changeData) {
     this.#movie = movie;
+    this.#commentsModel = commentsModel;
     this.#movieCard = cardView;
     this.#changeData = changeData;
 
   }
 
-  init(comments) {
-    this.#newPopupView = new NewPopupView(this.#movie, comments);
+  init() {
+    this.#newPopupView = new NewPopupView(this.#movie);
     this.#renderPopup();
+    this.#loadComments();
   }
 
   #renderPopup = () => {
@@ -29,6 +34,14 @@ export default class PopupPresenter {
     this.#newPopupView.setFormStateToDataSubmit(this.#handleFormSubmit);
     this.#newPopupView.setClickDeleteHandler(this.#handleDeleteComment);
     this.#newPopupView.setAddCommentHandlers(this.#handleAddNewComment);
+  };
+
+  #loadComments = async () => {
+    this.#comments = await this.#commentsModel.getComments(this.#movie.id);
+
+    this.#newPopupView.updateElement({
+      comments: this.#comments,
+    });
   };
 
   #handleFormSubmit = (movie) => {

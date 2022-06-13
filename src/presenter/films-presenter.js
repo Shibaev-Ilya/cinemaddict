@@ -105,13 +105,14 @@ export default class FilmsPresenter {
   };
 
   #renderMovie = (movie) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element, this.#handleViewAction, this.#commentsModel);
+    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element,  this.#commentsModel, this.#handleViewAction);
     moviePresenter.init(movie);
+
     this.#moviePresenters.set(movie.id, moviePresenter);
   };
 
   #renderMovies = (movies) => {
-    movies.forEach((movie) => this.#renderMovie(movie, this.#comments));
+    movies.forEach((movie) => this.#renderMovie(movie));
   };
 
   #handleShowMoreButtonClick = () => {

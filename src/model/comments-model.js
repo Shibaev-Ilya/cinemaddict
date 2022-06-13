@@ -14,16 +14,18 @@ export default class CommentsModel extends Observable {
     return this.#comments;
   }
 
-  getComments = async (updateType, movieId) => {
+  getComments = async (filmId) => {
+
     try {
-      this.#comments = await this.#commentsApiService.getComments(movieId);
+      this.#comments = await this.#commentsApiService.getComments(filmId);
     } catch(err) {
       this.#comments = [];
     }
 
-    this._notify(updateType, this.#comments);
+    return this.comments;
 
   };
+
 
   addComment = (updateType, update) => {
     this.#comments = [

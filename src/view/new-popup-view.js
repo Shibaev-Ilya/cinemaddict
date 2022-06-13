@@ -4,7 +4,7 @@ import {nanoid} from 'nanoid';
 import dayjs from 'dayjs';
 import he from 'he';
 
-const createPopupTemplate = (movie, commentData) => {
+const createPopupTemplate = (movie) => {
   const filmInfo = movie['film_info'];
   const comments = movie['comments'];
 
@@ -40,12 +40,12 @@ const createPopupTemplate = (movie, commentData) => {
 
   const getComments = () => {
     let commentsData = '';
-    const movieComments = commentData.filter((comment) => comments.includes(comment['id']));
-    for (const comment of movieComments) {
-      if (comment === undefined) {
-        continue;
-      }
-      commentsData += `<li class="film-details__comment js-comment" data-comment-id="${comment.id}">
+    if (comments.length !== 0) {
+      for (const comment of comments) {
+        if (comment === undefined) {
+          continue;
+        }
+        commentsData += `<li class="film-details__comment js-comment" data-comment-id="${comment.id}">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${comment['emotion']}.png" width="55" height="55" alt="emoji-smile">
             </span>
@@ -58,6 +58,7 @@ const createPopupTemplate = (movie, commentData) => {
               </p>
             </div>
           </li>`;
+      }
     }
     return commentsData;
   };
@@ -187,21 +188,17 @@ const createPopupTemplate = (movie, commentData) => {
 };
 
 export default class NewPopupView extends AbstractStatefulView {
-  #comments = [];
   #newComment = null;
   #emoji = 'smile';
 
-  constructor(movie, comments) {
+  constructor(movie) {
     super();
-    this._state = NewPopupView.parseDataToState(movie);
-    this.setAddCommentHandlers();
-    this.#comments = comments;
+    this._state = NewPopupView.parseDataToState({...movie, comments: []});
     this.addPopup();
-    this.updateElement(this._state);
   }
 
   get template() {
-    return createPopupTemplate(this._state, this.#comments);
+    return createPopupTemplate(this._state);
   }
 
   _restoreHandlers = () => {
@@ -231,6 +228,7 @@ export default class NewPopupView extends AbstractStatefulView {
   };
 
   #clickDeleteHandler = (evt) => {
+    console.log(this._state);
     evt.preventDefault();
     if (evt.target.classList.contains('js-delete-comment')) {
       const commentId = evt.currentTarget.dataset.commentId;
@@ -281,7 +279,7 @@ export default class NewPopupView extends AbstractStatefulView {
         'date': humanizeTaskDueDate(dayjs(), 'YYYY/MM/DD HH:mm'),
         'emotion': this.#emoji
       };
-      this.#comments.push(this.#newComment);
+      this._state['comments'].push(this.#newComment);
       this._state['comments'].push(this.#newComment['id']);
       this.#updateStateElement();
       this._callback.addNewComment(this.#newComment);

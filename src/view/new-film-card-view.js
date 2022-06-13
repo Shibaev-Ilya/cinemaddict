@@ -54,17 +54,18 @@ export default class NewFilmCardView extends AbstractView {
 
   setClickAddPopupHandler = (callback) => {
     this._callback.clickAddPopup = callback;
-    this.element.addEventListener('click', this.#clickHandler);
+    this.element.addEventListener('click', this.#clickAddPopupHandler);
   };
 
-  #clickHandler = (evt) => {
+  #clickAddPopupHandler = (evt) => {
     evt.preventDefault();
     const buttons = evt.target.closest('.film-card__controls');
     if (buttons) {
       return;
     }
-    const filmId = evt.currentTarget.dataset.id;
-    this._callback.clickAddPopup(filmId);
+
+    this._callback.clickAddPopup(this.movie);
+
   };
 
   setFavoriteClickHandler = (callback) => {

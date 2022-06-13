@@ -3,18 +3,21 @@ import {render, replace, remove} from '../framework/render.js';
 import {UserAction, ActionType} from '../utils.js';
 import PopupPresenter from './popup-presenter.js';
 
+
 export default class MoviePresenter {
   #filmListContainer = null;
   #movieCard = null;
   #changeData = null;
-  #popupPresenter = null;
   #commentsModel = null;
-  #comments = null;
 
-  constructor(filmListContainer, changeData, commentsModel) {
+  constructor(filmListContainer, commentsModel, changeData) {
+
     this.#filmListContainer = filmListContainer;
-    this.#changeData = changeData;
     this.#commentsModel = commentsModel;
+    this.#changeData = changeData;
+
+    this.#commentsModel = commentsModel;
+
   }
 
   init(movie) {
@@ -25,9 +28,8 @@ export default class MoviePresenter {
     this.#movieCard.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#movieCard.setWatchedClickHandler(this.#handleWatchedClick);
     this.#movieCard.setWatchListClickHandler(this.#handleWatchListClick);
-    this.#movieCard.setClickAddPopupHandler(this.#handleGetComments);
 
-    this.#popupPresenter = new PopupPresenter(movie, this.#movieCard, this.#changeData);
+    this.#movieCard.setClickAddPopupHandler(this.#handleAddPopupClick);
 
     if (movieComponent === null) {
       render(this.#movieCard, this.#filmListContainer);
@@ -39,16 +41,6 @@ export default class MoviePresenter {
     }
 
   }
-
-  #handleModelEvent = (updateType, comments) => {
-
-    switch (updateType) {
-      case ActionType.COMMENTS_INIT:
-        this.#comments = comments;
-        break;
-    }
-    this.#popupPresenter.init(this.#comments);
-  };
 
   get movieCard() {
     return this.#movieCard;
@@ -78,13 +70,10 @@ export default class MoviePresenter {
     );
   };
 
-  #handleGetComments = (movieId) => {
-    this.#commentsModel.addObserver(this.#handleModelEvent);
-    this.#changeData(
-      UserAction.GET_COMMENTS,
-      ActionType.COMMENTS_INIT,
-      movieId
-    );
+
+  #handleAddPopupClick = (movie) => {
+    const popupPresenter = new PopupPresenter(movie, this.#commentsModel, this.movieCard, this.#changeData);
+    popupPresenter.init();
   };
 
   destroy = () => {
