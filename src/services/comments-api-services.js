@@ -8,14 +8,15 @@ const Method = {
 
 export default class CommentsApiService extends ApiService {
 
-  getComments = (filmId) => this._load({url: `/comments/${filmId}`})
+  getComments = (filmId) => this._load({url: `comments/${filmId}`})
     .then(ApiService.parseResponse);
 
   addComment = async (comment) => {
+    const filmId = comment['filmId'];
     const response = await this._load({
-      url: `/comments/${comment.id}`,
+      url: `comments/${filmId}`,
       method: Method.POST,
-      body: JSON.stringify(comment),
+      body: JSON.stringify(this.#adaptToServer(comment)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
@@ -26,5 +27,12 @@ export default class CommentsApiService extends ApiService {
     url: `comments/${commentId}`,
     method: Method.DELETE,
   });
+
+  #adaptToServer = (comment) => {
+    const adaptedComment = {...comment};
+
+    delete adaptedComment.filmId;
+    return adaptedComment;
+  };
 
 }

@@ -1,14 +1,12 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {getRuntime, humanizeDate} from '../utils.js';
-import {nanoid} from 'nanoid';
-import dayjs from 'dayjs';
 import he from 'he';
 
-const createPopupTemplate = (movie) => {
-  const filmInfo = movie['film_info'];
-  const comments = movie['comments'];
+const createPopupTemplate = (state) => {
+  const filmInfo = state.movie['film_info'];
+  const comments = state['comments'];
 
-  const userDetails = movie['userDetails'];
+  const userDetails = state.movie['userDetails'];
   const isWatchlist = userDetails['watchlist'];
   const isHistory = userDetails['alreadyWatched'];
   const isFavorite = userDetails['favorite'];
@@ -188,10 +186,15 @@ const createPopupTemplate = (movie) => {
 export default class PopupView extends AbstractStatefulView {
   #newComment = null;
   #emoji = 'smile';
+  #movieId = null;
 
   constructor(movie) {
     super();
-    this._state = PopupView.parseDataToState({...movie, comments: []});
+    this.#movieId = movie.id;
+    this._state = PopupView.parseDataToState({
+      movie: {...movie},
+      comments: []
+    });
     this.addPopup();
   }
 
@@ -255,10 +258,13 @@ export default class PopupView extends AbstractStatefulView {
     if (evt.target.tagName !== 'IMG') {
       return;
     }
+
     const imgContainer = this.element.querySelector('.film-details__add-emoji-label');
+
     if (imgContainer.hasChildNodes()) {
       imgContainer.innerHTML = '';
     }
+
     const inputId = evt.target.parentElement.getAttribute('for');
 
     this.#emoji = this.element.querySelector(`#${inputId}`).value;
@@ -270,16 +276,17 @@ export default class PopupView extends AbstractStatefulView {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
       this.#newComment = {
-        'id': nanoid(5),
-        'author': 'Ilya O\'Reilly',
+        //'id': nanoid(5),
+        //'author': 'Ilya O\'Reilly',
         'comment': evt.target.value,
-        'date': humanizeDate(dayjs(), 'YYYY/MM/DD HH:mm'),
+        //'date': humanizeDate(dayjs(), 'YYYY/MM/DD HH:mm'),
         'emotion': this.#emoji
       };
       this._state['comments'].push(this.#newComment);
-      this._state['comments'].push(this.#newComment['id']);
+
       this.#updateStateElement();
-      this._callback.addNewComment(this.#newComment);
+
+      this._callback.addNewComment({...this.#newComment, filmId: this.#movieId});
       this.#emoji = 'smile';
     }
   };
@@ -337,7 +344,7 @@ export default class PopupView extends AbstractStatefulView {
   static parseDataToState = (movie) => ({...movie, scrollPosition: null});
 
   static parseStateToData = (state) => {
-    const newData = {...state};
+    const newData = {...state.movie};
     delete newData.scrollPosition;
     return newData;
   };

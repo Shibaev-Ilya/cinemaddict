@@ -62,7 +62,6 @@ export default class FilmsPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-
     switch (actionType) {
       case UserAction.UPDATE_DETAILS:
         this.#moviesModel.updateMovie(updateType, update);

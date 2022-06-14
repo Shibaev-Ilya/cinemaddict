@@ -13,7 +13,7 @@ export default class MoviesApiService extends ApiService {
 
   updateMovie = async (movie) => {
     const response = await this._load({
-      url: `movies/${movie.id}`,
+      url: `movies/${String(movie.id)}`,
       method: Method.PUT,
       body: JSON.stringify(this.#adaptToServer(movie)),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -37,7 +37,6 @@ export default class MoviesApiService extends ApiService {
     };
 
     delete adaptedMovie.userDetails;
-
     return adaptedMovie;
   };
 
