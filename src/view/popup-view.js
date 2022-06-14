@@ -231,10 +231,13 @@ export default class PopupView extends AbstractStatefulView {
   #clickDeleteHandler = (evt) => {
     evt.preventDefault();
     if (evt.target.classList.contains('js-delete-comment')) {
+
       const commentId = evt.currentTarget.dataset.commentId;
+      this._callback.deleteClick(commentId);
+
       evt.currentTarget.remove();
 
-      const index = this._state['comments'].findIndex((comment) => comment.toString() === commentId.toString());
+      const index = this._state['comments'].findIndex((comment) => comment.id === commentId);
 
       this._state['comments'] = [
         ...this._state['comments'].slice(0, index),
@@ -243,7 +246,7 @@ export default class PopupView extends AbstractStatefulView {
 
       this.#updateStateElement();
 
-      this._callback.deleteClick(commentId);
+
     }
   };
 
@@ -276,10 +279,7 @@ export default class PopupView extends AbstractStatefulView {
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
       this.#newComment = {
-        //'id': nanoid(5),
-        //'author': 'Ilya O\'Reilly',
         'comment': evt.target.value,
-        //'date': humanizeDate(dayjs(), 'YYYY/MM/DD HH:mm'),
         'emotion': this.#emoji
       };
       this._state['comments'].push(this.#newComment);
@@ -332,6 +332,7 @@ export default class PopupView extends AbstractStatefulView {
 
   #watchedHandler = (evt) => {
     evt.preventDefault();
+    console.log(this._state);
     this._callback.watchedClick();
     this._state['userDetails']['alreadyWatched'] = !this._state['userDetails']['alreadyWatched'];
     this.#updateStateElement();

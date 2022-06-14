@@ -22,7 +22,7 @@ export default class PopupPresenter {
   init() {
     this.#newPopupView = new PopupView(this.#movie);
     this.#renderPopup();
-    this.#loadComments();
+    this.loadComments();
   }
 
   #renderPopup = () => {
@@ -35,7 +35,7 @@ export default class PopupPresenter {
     this.#newPopupView.setAddCommentHandlers(this.#handleAddNewComment);
   };
 
-  #loadComments = async () => {
+  loadComments = async () => {
     this.#comments = await this.#commentsModel.getComments(this.#movie.id);
 
     this.#newPopupView.updateElement({

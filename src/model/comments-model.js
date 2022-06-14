@@ -29,7 +29,9 @@ export default class CommentsModel extends Observable {
 
   addComment = async (updateType, comment) => {
     try {
-      this.#comments = await this.#commentsApiService.addComment(comment);
+      const updatedComments = await this.#commentsApiService.addComment(comment);
+      this.#comments = updatedComments.comments;
+
     } catch(err) {
       this.#comments = [];
     }
@@ -38,19 +40,26 @@ export default class CommentsModel extends Observable {
 
   };
 
-  deleteComment = (updateType, update) => {
+  deleteComment = async (updateType, deletedCommentId) => {
 
-    const index = this.#comments.findIndex((comment) => comment.id.toString() === update.toString());
+    const index = this.comments.findIndex((comment) => comment.id === deletedCommentId);
+
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
     }
 
-    this.#comments = [
-      ...this.#comments.slice(0, index),
-      ...this.#comments.slice(index + 1),
-    ];
+    try {
+      await this.#commentsApiService.deleteComment(deletedCommentId);
+      this.#comments = [
+        ...this.#comments.slice(0, index),
+        ...this.#comments.slice(index + 1),
+      ];
 
-    this._notify(updateType, update);
+    } catch(err) {
+      throw new Error('Can\'t delete comment');
+    }
+
+    return this.comments;
   };
 
 }

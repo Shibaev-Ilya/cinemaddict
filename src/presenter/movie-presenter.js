@@ -76,8 +76,4 @@ export default class MoviePresenter {
     popupPresenter.init();
   };
 
-  destroy = () => {
-    remove(this.#movieCard);
-  };
-
 }
