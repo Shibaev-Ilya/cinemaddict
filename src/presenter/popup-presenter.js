@@ -40,7 +40,6 @@ export default class PopupPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
     switch (updateType) {
       case ActionType.PATCH_COMMENT:
         this.#popupView._setState({
@@ -72,7 +71,6 @@ export default class PopupPresenter {
   };
 
   #handleDeleteComment = (data) => {
-    console.log(data);
     this.#changeData(
       UserAction.DELETE_COMMENT,
       ActionType.DELETE_COMMENT,

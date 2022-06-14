@@ -88,7 +88,6 @@ export default class FilmsPresenter {
         this.#moviePresenters.get(data.movie.id).init(data.movie);
         break;
       case ActionType.DELETE_COMMENT:
-        console.log(updateType, data);
         this.#moviePresenters.get(data.movie.id).init(data.movie);
         break;
       case ActionType.MINOR:
