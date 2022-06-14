@@ -309,7 +309,8 @@ export default class PopupView extends AbstractStatefulView {
   #favoriteHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
-    this._state['userDetails']['favorite'] = !this._state['userDetails']['favorite'];
+    console.log(this._state);
+    this._state['movie']['userDetails']['favorite'] = !this._state['movie']['userDetails']['favorite'];
     this.#updateStateElement();
   };
 
@@ -321,7 +322,7 @@ export default class PopupView extends AbstractStatefulView {
   #watchListHandler = (evt) => {
     evt.preventDefault();
     this._callback.watchListClick();
-    this._state['userDetails']['watchlist'] = !this._state['userDetails']['watchlist'];
+    this._state['movie']['userDetails']['watchlist'] = !this._state['movie']['userDetails']['watchlist'];
     this.#updateStateElement();
   };
 
@@ -333,7 +334,7 @@ export default class PopupView extends AbstractStatefulView {
   #watchedHandler = (evt) => {
     evt.preventDefault();
     this._callback.watchedClick();
-    this._state['userDetails']['alreadyWatched'] = !this._state['userDetails']['alreadyWatched'];
+    this._state['movie']['userDetails']['alreadyWatched'] = !this._state['movie']['userDetails']['alreadyWatched'];
     this.#updateStateElement();
   };
 
