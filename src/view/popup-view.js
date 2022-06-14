@@ -309,7 +309,6 @@ export default class PopupView extends AbstractStatefulView {
   #favoriteHandler = (evt) => {
     evt.preventDefault();
     this._callback.favoriteClick();
-    console.log(this._state);
     this._state['movie']['userDetails']['favorite'] = !this._state['movie']['userDetails']['favorite'];
     this.#updateStateElement();
   };
