@@ -332,7 +332,6 @@ export default class PopupView extends AbstractStatefulView {
 
   #watchedHandler = (evt) => {
     evt.preventDefault();
-    console.log(this._state);
     this._callback.watchedClick();
     this._state['userDetails']['alreadyWatched'] = !this._state['userDetails']['alreadyWatched'];
     this.#updateStateElement();
