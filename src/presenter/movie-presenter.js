@@ -1,5 +1,5 @@
 import FilmCardView from '../view/film-card-view.js';
-import {render, replace} from '../framework/render.js';
+import {render, replace, remove} from '../framework/render.js';
 import {UserAction, ActionType} from '../utils.js';
 import PopupPresenter from './popup-presenter.js';
 
@@ -74,6 +74,10 @@ export default class MoviePresenter {
   #handleAddPopupClick = (movie) => {
     const popupPresenter = new PopupPresenter(movie, this.#commentsModel, this.movieCard, this.#changeData);
     popupPresenter.init();
+  };
+
+  destroy = () => {
+    remove(this.#movieCard);
   };
 
 }
