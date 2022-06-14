@@ -90,6 +90,8 @@ const ActionType = {
   MAJOR: 'MAJOR',
   INIT: 'INIT',
   COMMENTS_INIT: 'COMMENTS_INIT',
+  PATCH_COMMENT: 'PATCH_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
 };
 
 export {getRandomInteger, getRandomPositiveFloat, humanizeDate, getRuntime, sortRatingUp, sortMovieDate, SortType, UserAction, ActionType, FilterType, filter};

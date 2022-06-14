@@ -2,7 +2,7 @@ import {render, remove} from '../framework/render.js';
 import FilmsView from '../view/films-view.js';
 import FilmListView from '../view/film-list-view.js';
 import FilmListContainerView from '../view/film-list-container-view.js';
-import NewEmptyListView from '../view/empty-view.js';
+import EmptyListView from '../view/empty-view.js';
 import SortView from '../view/sort-view.js';
 import MoviePresenter from './movie-presenter.js';
 import ShowMorePresenter from './show-more-presenter.js';
@@ -17,25 +17,25 @@ export default class FilmsPresenter {
   #commentsModel = null;
   #filmsContainer = null;
   #renderedFilmCount = FILM_PER_PAGE;
-  #newFilterView = null;
-  #newSortView = null;
+  #filterView = null;
+  #sortView = null;
   #moviePresenters = new Map();
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.FILTER_ALL;
-  #newEmptyListView = null;
+  #emptyListView = null;
 
-  #newFilmsView = new FilmsView;
-  #newFilmListView = new FilmListView;
-  #newFilmListContainerView = new FilmListContainerView;
-  #showMorePresenter = new ShowMorePresenter(this.#newFilmsView.element);
+  #filmsView = new FilmsView;
+  #filmListView = new FilmListView;
+  #filmListContainerView = new FilmListContainerView;
+  #showMorePresenter = new ShowMorePresenter(this.#filmsView.element);
   #loadingComponent = new LoadingView();
   #isLoading = true;
 
-  constructor(FilmsContainer, MoviesModel, CommentsModel, FilterModel) {
-    this.#moviesModel = MoviesModel;
-    this.#commentsModel = CommentsModel;
-    this.#filmsContainer = FilmsContainer;
-    this.#filterModel = FilterModel;
+  constructor(filmsContainer, moviesModel, commentsModel, filterModel) {
+    this.#moviesModel = moviesModel;
+    this.#commentsModel = commentsModel;
+    this.#filmsContainer = filmsContainer;
+    this.#filterModel = filterModel;
 
     this.#moviesModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -79,9 +79,17 @@ export default class FilmsPresenter {
   };
 
   #handleModelEvent = (updateType, data) => {
+
     switch (updateType) {
       case ActionType.PATCH:
         this.#moviePresenters.get(data.id).init(data);
+        break;
+      case ActionType.PATCH_COMMENT:
+        this.#moviePresenters.get(data.movie.id).init(data.movie);
+        break;
+      case ActionType.DELETE_COMMENT:
+        console.log(updateType, data);
+        this.#moviePresenters.get(data.movie.id).init(data.movie);
         break;
       case ActionType.MINOR:
         this.#clearBoard();
@@ -100,11 +108,11 @@ export default class FilmsPresenter {
   };
 
   #renderLoading = () => {
-    render(this.#loadingComponent, this.#newFilmListContainerView.element);
+    render(this.#loadingComponent, this.#filmListContainerView.element);
   };
 
   #renderMovie = (movie) => {
-    const moviePresenter = new MoviePresenter(this.#newFilmListContainerView.element,  this.#commentsModel, this.#handleViewAction);
+    const moviePresenter = new MoviePresenter(this.#filmListContainerView.element,  this.#commentsModel, this.#moviesModel, this.#handleViewAction);
     moviePresenter.init(movie);
 
     this.#moviePresenters.set(movie.id, moviePresenter);
@@ -116,14 +124,14 @@ export default class FilmsPresenter {
 
   #handleShowMoreButtonClick = () => {
     const moviesCount = this.movies.length;
-    const newRenderedMovieCount = Math.min(moviesCount, this.#renderedFilmCount + FILM_PER_PAGE);
-    const movies = this.movies.slice(this.#renderedFilmCount, newRenderedMovieCount);
+    const renderedMovieCount = Math.min(moviesCount, this.#renderedFilmCount + FILM_PER_PAGE);
+    const movies = this.movies.slice(this.#renderedFilmCount, renderedMovieCount);
     this.#renderMovies(movies);
     this.#renderedFilmCount += FILM_PER_PAGE;
 
     if (moviesCount <= this.#renderedFilmCount) {
-      this.#showMorePresenter.newButtonShowMoreView.element.remove();
-      this.#showMorePresenter.newButtonShowMoreView.removeElement();
+      this.#showMorePresenter.buttonShowMoreView.element.remove();
+      this.#showMorePresenter.buttonShowMoreView.removeElement();
     }
   };
 
@@ -132,8 +140,8 @@ export default class FilmsPresenter {
   };
 
   #renderEmptyList = () => {
-    this.#newEmptyListView = new NewEmptyListView(this.#filterType);
-    render(this.#newEmptyListView, this.#newFilmListContainerView.element);
+    this.#emptyListView = new EmptyListView(this.#filterType);
+    render(this.#emptyListView, this.#filmListContainerView.element);
   };
 
   #renderFilmList = (movies) => {
@@ -146,9 +154,9 @@ export default class FilmsPresenter {
   };
 
   #renderSort = () => {
-    this.#newSortView = new SortView(this.#currentSortType);
-    this.#newSortView.setClickSortHandler(this.#sortMovies);
-    render(this.#newSortView, this.#filmsContainer);
+    this.#sortView = new SortView(this.#currentSortType);
+    this.#sortView.setClickSortHandler(this.#sortMovies);
+    render(this.#sortView, this.#filmsContainer);
   };
 
   #sortMovies = (data) => {
@@ -162,12 +170,12 @@ export default class FilmsPresenter {
     this.#moviePresenters.forEach((presenter) => presenter.destroy());
     this.#moviePresenters.clear();
 
-    remove(this.#newFilterView);
-    remove(this.#newSortView);
+    remove(this.#filterView);
+    remove(this.#sortView);
     remove(this.#loadingComponent);
-    remove(this.#newEmptyListView);
+    remove(this.#emptyListView);
     remove(this.#loadingComponent);
-    remove(this.#showMorePresenter.newButtonShowMoreView);
+    remove(this.#showMorePresenter.buttonShowMoreView);
 
     if (resetRenderedMovieCount) {
       this.#renderedFilmCount = FILM_PER_PAGE;
@@ -181,9 +189,9 @@ export default class FilmsPresenter {
   #renderBoard() {
 
     if (this.#isLoading) {
-      render(this.#newFilmsView, this.#filmsContainer);
-      render(this.#newFilmListView, this.#newFilmsView.element);
-      render(this.#newFilmListContainerView, this.#newFilmListView.element);
+      render(this.#filmsView, this.#filmsContainer);
+      render(this.#filmListView, this.#filmsView.element);
+      render(this.#filmListContainerView, this.#filmListView.element);
       this.#renderLoading();
       return;
     }
@@ -195,9 +203,9 @@ export default class FilmsPresenter {
       this.#renderSort();
     }
 
-    render(this.#newFilmsView, this.#filmsContainer);
-    render(this.#newFilmListView, this.#newFilmsView.element);
-    render(this.#newFilmListContainerView, this.#newFilmListView.element);
+    render(this.#filmsView, this.#filmsContainer);
+    render(this.#filmListView, this.#filmsView.element);
+    render(this.#filmListContainerView, this.#filmListView.element);
 
     if (moviesCount === 0) {
       this.#renderEmptyList();

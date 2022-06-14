@@ -220,7 +220,7 @@ export default class PopupView extends AbstractStatefulView {
     this.updateElement(this._state);
     const offset = this.element.scrollHeight - this._state.scrollPosition.height;
     this.element.scrollTo(this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
-    this._callback.setFormStateToDataSubmit(PopupView.parseStateToData(this._state));
+    //this._callback.setFormStateToDataSubmit(PopupView.parseStateToData(this._state));
   };
 
   setClickDeleteHandler = (callback) => {
@@ -233,7 +233,8 @@ export default class PopupView extends AbstractStatefulView {
     if (evt.target.classList.contains('js-delete-comment')) {
 
       const commentId = evt.currentTarget.dataset.commentId;
-      this._callback.deleteClick(commentId);
+
+      this._callback.deleteClick({id: commentId, ...this._state});
 
       evt.currentTarget.remove();
 
@@ -282,7 +283,6 @@ export default class PopupView extends AbstractStatefulView {
         'comment': evt.target.value,
         'emotion': this.#emoji
       };
-      this._state['comments'].push(this.#newComment);
 
       this.#updateStateElement();
 
@@ -341,7 +341,7 @@ export default class PopupView extends AbstractStatefulView {
     this._callback.setFormStateToDataSubmit = callback;
   };
 
-  static parseDataToState = (movie) => ({...movie, scrollPosition: null});
+  static parseDataToState = (data) => ({...data, scrollPosition: null});
 
   static parseStateToData = (state) => {
     const newData = {...state.movie};

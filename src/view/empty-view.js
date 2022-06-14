@@ -16,7 +16,7 @@ const createNewEmptyListTemplate = (filterType) => (
   </section>`
 );
 
-export default class NewEmptyListView extends AbstractView {
+export default class EmptyListView extends AbstractView {
 
   #filterType = null;
 

@@ -44,7 +44,7 @@ export default class MoviesModel extends Observable {
       ];
       this._notify(updateType, updatedMovie);
     } catch(err) {
-      throw new Error('Can\'t update movie');
+      throw new Error(err);
     }
   };
 

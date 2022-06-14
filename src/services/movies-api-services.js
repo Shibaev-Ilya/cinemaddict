@@ -12,6 +12,7 @@ export default class MoviesApiService extends ApiService {
   }
 
   updateMovie = async (movie) => {
+
     const response = await this._load({
       url: `movies/${String(movie.id)}`,
       method: Method.PUT,

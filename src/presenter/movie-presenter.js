@@ -9,12 +9,14 @@ export default class MoviePresenter {
   #movieCard = null;
   #changeData = null;
   #commentsModel = null;
+  #moviesModel = null;
 
-  constructor(filmListContainer, commentsModel, changeData) {
+  constructor(filmListContainer, commentsModel, moviesModel, changeData) {
 
     this.#filmListContainer = filmListContainer;
     this.#commentsModel = commentsModel;
     this.#changeData = changeData;
+    this.#moviesModel = moviesModel;
 
     this.#commentsModel = commentsModel;
 
@@ -72,7 +74,7 @@ export default class MoviePresenter {
 
 
   #handleAddPopupClick = (movie) => {
-    const popupPresenter = new PopupPresenter(movie, this.#commentsModel, this.movieCard, this.#changeData);
+    const popupPresenter = new PopupPresenter(movie, this.#commentsModel, this.#moviesModel, this.movieCard, this.#changeData);
     popupPresenter.init();
   };
 

@@ -3,7 +3,7 @@ import {render} from '../framework/render';
 
 export default class ShowMorePresenter {
 
-  #newButtonShowMoreView = new ButtonShowMoreView;
+  #buttonShowMoreView = new ButtonShowMoreView;
   #buttonContainer = null;
 
   constructor(container) {
@@ -11,12 +11,12 @@ export default class ShowMorePresenter {
   }
 
   init(handler) {
-    render(this.#newButtonShowMoreView, this.#buttonContainer);
-    this.#newButtonShowMoreView.setClickHandler(handler);
+    render(this.#buttonShowMoreView, this.#buttonContainer);
+    this.#buttonShowMoreView.setClickHandler(handler);
   }
 
-  get newButtonShowMoreView() {
-    return this.#newButtonShowMoreView;
+  get buttonShowMoreView() {
+    return this.#buttonShowMoreView;
   }
 
 }
