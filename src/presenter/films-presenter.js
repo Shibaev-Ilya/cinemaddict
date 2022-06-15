@@ -87,9 +87,6 @@ export default class FilmsPresenter {
       case ActionType.PATCH_COMMENT:
         this.#moviePresenters.get(data.movie.id).init(data.movie);
         break;
-      case ActionType.DELETE_COMMENT:
-        this.#moviePresenters.get(data.movie.id).init(data.movie);
-        break;
       case ActionType.MINOR:
         this.#clearBoard();
         this.#renderBoard();

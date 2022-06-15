@@ -193,7 +193,11 @@ export default class PopupView extends AbstractStatefulView {
     this.#movieId = movie.id;
     this._state = PopupView.parseDataToState({
       movie: {...movie},
-      comments: []
+      comments: [],
+      scrollPosition: {
+        'x': 0,
+        'y': 0,
+        'height': 0,}
     });
     this.addPopup();
   }
@@ -203,6 +207,8 @@ export default class PopupView extends AbstractStatefulView {
   }
 
   _restoreHandlers = () => {
+    this.element.scrollTo(this._state.scrollPosition.x, this._state.scrollPosition.y);
+
     this.setAddCommentHandlers(this._callback.addNewComment);
     this.setClickCloseHandler(this._callback.click);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
@@ -212,15 +218,18 @@ export default class PopupView extends AbstractStatefulView {
   };
 
   #updateStateElement = () => {
-    this._state.scrollPosition = {
-      'x': this.element.scrollLeft,
-      'y': this.element.scrollTop,
-      'height': this.element.scrollHeight,
-    };
+    this.#saveScrollPositionHandler();
     this.updateElement(this._state);
     const offset = this.element.scrollHeight - this._state.scrollPosition.height;
     this.element.scrollTo(this._state.scrollPosition.x, this._state.scrollPosition.y + offset);
-    //this._callback.setFormStateToDataSubmit(PopupView.parseStateToData(this._state));
+  };
+
+  #saveScrollPositionHandler = () => {
+    this._setState({scrollPosition: {
+      'x': this.element.scrollLeft,
+      'y': this.element.scrollTop,
+      'height': this.element.scrollHeight,
+    }});
   };
 
   setClickDeleteHandler = (callback) => {
@@ -234,8 +243,6 @@ export default class PopupView extends AbstractStatefulView {
 
       const commentId = evt.currentTarget.dataset.commentId;
 
-      this._callback.deleteClick({id: commentId, ...this._state});
-
       evt.currentTarget.remove();
 
       const index = this._state['comments'].findIndex((comment) => comment.id === commentId);
@@ -245,8 +252,14 @@ export default class PopupView extends AbstractStatefulView {
         ...this._state['comments'].slice(index + 1),
       ];
 
-      this.#updateStateElement();
+      this._state['movie']['comments'] = [
+        ...this._state['movie']['comments'].slice(0, index),
+        ...this._state['movie']['comments'].slice(index + 1),
+      ];
 
+      this._callback.deleteClick({id: commentId, ...this._state});
+
+      this.#updateStateElement();
 
     }
   };
@@ -343,12 +356,6 @@ export default class PopupView extends AbstractStatefulView {
 
   static parseDataToState = (data) => ({...data, scrollPosition: null});
 
-  static parseStateToData = (state) => {
-    const newData = {...state.movie};
-    delete newData.scrollPosition;
-    return newData;
-  };
-
   #removePopup = (cb) => {
     const body = document.querySelector('body');
     body.classList.remove('hide-overflow');
@@ -383,6 +390,7 @@ export default class PopupView extends AbstractStatefulView {
     body.append(this.element);
     this.setClickCloseHandler(this.#removePopup);
     document.addEventListener('keydown', this.#onEscKeyDown);
+    this.#saveScrollPositionHandler();
   };
 
 }

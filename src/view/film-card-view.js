@@ -2,7 +2,6 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {humanizeDate, getRuntime} from '../utils.js';
 
 const createNewFilmCardTemplate = (movie) => {
-
   const filmInfo = movie['film_info'];
   const userDetails = movie['userDetails'];
   const comments = movie['comments'];
