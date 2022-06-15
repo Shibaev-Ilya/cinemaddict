@@ -48,7 +48,7 @@ export default class PopupPresenter {
         break;
       case ActionType.MINOR:
         this.#popupView.updateElement({
-          userDetails: data.userDetails,
+          movie: {...data, userDetails: data.userDetails},
         });
         break;
     }

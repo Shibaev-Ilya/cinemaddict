@@ -85,7 +85,7 @@ export default class FilmsPresenter {
         this.#moviePresenters.get(data.id).init(data);
         break;
       case ActionType.PATCH_COMMENT:
-        this.#moviePresenters.get(data.movie.id).init(data.movie);
+        this.#moviePresenters.get(data.movie.id).init({...data.movie, comments: data.comments.slice().map( (comment) => comment.id)});
         break;
       case ActionType.MINOR:
         this.#clearBoard();
